@@ -181,7 +181,7 @@ void CardHandler::addCard(Card card)
 {
 	//adds cards based on the type
 
-	//the way i did the randomness is a pretty weird way to do it
+	//the way I did the randomness is a pretty weird way to do it
 	//it pushes back into the vector based on the percent chance
 	//i made sure all the percents added to 100 for each one so it's actually accurate
 
