@@ -15,11 +15,6 @@ using namespace std;
 
 Game::Game()
 {
-	//this is real ugly
-
-	//i used new here so the pointers don't go out of scope and give me annoying allocation errors
-	//which is why i also defined the virtual destructor in the Space class, which is the parent class
-
 	spaces.push_back(new Space("Go Space", "GO_SPACE"));
 	spaces.push_back(new Property{ "Mediterranean Avenue","PROPERTY","STANDARD","MAGENTA",60,10,30,90,160,250,50,2,"None",false,false });
 	spaces.push_back(new Space{ "Community Chest","COMM" });
@@ -63,7 +58,6 @@ Game::Game()
 
 	colorSets = { "MAGENTA","BLUE","PINK","ORANGE","RED","YELLOW","GREEN","DARK_BLUE" };
 
-	//best board ever
 	board = "21       22   23   24   25   26   27   28   29   30       31\n"
 		"  +------------------------------------------------------+\n"
 		"  |FREE|KENT|CHNC|INDI|ILLI|B&O |ATLN|VENT|WATR|MRVN|GOTO|\n"
@@ -133,8 +127,8 @@ void Game::displayBoard()
 	}
 	cout << "-----------------------------------------------------------------------" << endl;
 
-	//i actually didn't use this gameOutput very much at all
-	//i mostly just flushed the output and then displayed the board and used cout
+	//I actually didn't use this gameOutput very much at all
+	//I mostly just flushed the output and then displayed the board and used cout
 	//which was much easier
 	for (auto& str : gameOutput)
 	{
@@ -165,8 +159,6 @@ void Game::setInfo(Player plr)
 
 void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 {
-	//this is where the code turns into a giant maze of control structures
-	//oof
 
 	bool done{ false };
 	player.setRolling(true); // reset in case they warped last turn
@@ -305,14 +297,14 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 							string answer = Utilities::getStringYesNo("Are you sure ?(y/n): ");
 							if (answer == "y" || answer == "Y")//if they said yes
 							{
-								if (player.canDeduct(cost))//only lift mortgage if they got it
+								if (player.canDeduct(cost))//only lift mortgage if they have it
 								{
 									player.deductCash(cost);
 									mortProp[choice - 1]->setMortgage();//set the mortgage value to false
 									cout << "Property successfully bought back." << endl;
 									Sleep(3000);
 								}
-								else//dont got enough money to lift it
+								else//dont have enough money to lift it
 								{
 									cout << "You do not have enough money..." << endl;
 									Sleep(3000);
@@ -926,7 +918,7 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 							Sleep(2000);
 							int AImortValue{ 0 };
 
-							//i cant do rand() % 0 here, so i use a ternary operator:
+							//I cant do rand() % 0 here, so i use a ternary operator:
 							//if the size of the vector is 1 or less, just grab the 0th element, otherwise:
 							//grab a random index from ( 0 ) to ( the size of the vector - 1 )
 							//the minus one is to prevent going out of bounds(vector[vector.size()] will be out of range)
