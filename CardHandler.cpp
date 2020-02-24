@@ -7,47 +7,45 @@
 
 using namespace std;
 
-//declaring the static members to avoid errors
 vector<Card> CardHandler::commCards;
 vector<Card> CardHandler::chanceCards;
 vector<Card> CardHandler::collectableCards;
 
-//a helper function i used to avoid copies not afffecting the actual player
 void affectActual(vector<Player>& curPlayers, Player& actual);
 
 void CardHandler::handleCard(vector<Player>& curPlayers, Game& game, Player & player, Card card)
 {
 	string type = card.effect;
-	vector<string> out; //will be set to gameOutput later
+	vector<string> out;
 	out.push_back(card.desc);
 	game.setGameOutput(out);
 	game.displayBoard();
-	if (type == "get") //player gets money
+	if (type == "get")
 	{
 		player.addCash(card.amount);
 		game.setInfo(player);
 		out.push_back("Cash successfully added.");
 	}
-	else if (type == "pay") //player must pay
+	else if (type == "pay")
 	{
 		player.deductCash(card.amount);
 		game.setInfo(player);
-		if (player.getCash() <= 0)//not enough money to pay, bankrupt
+		if (player.getCash() <= 0)
 		{
 			out.push_back("Oh no! You went bankrupt! Better luck next time...");
 			player.setBankruptcy(true);
 			Utilities::resetOwnership(player, game.getSpaces());
 			Sleep(3000);
 		}
-		else//they had enough
+		else
 		{
 			out.push_back("Cash successfully deducted.");
 			Sleep(3000);
 		}
 	}
-	else if (type == "advanceGo")//they warp to GO
+	else if (type == "advanceGo")
 	{
-		player.setCurrentSpot(0);//0 is the GO space in the spaces vector
+		player.setCurrentSpot(0);
 		player.addCash(200);
 		game.setInfo(player);
 		out.push_back("You successfully warped to go and got $200.");
@@ -55,17 +53,14 @@ void CardHandler::handleCard(vector<Player>& curPlayers, Game& game, Player & pl
 	}
 	else if (type == "goJail")
 	{
-		player.setCurrentSpot(10);//10 is the jail spot in the spaces vector
+		player.setCurrentSpot(10);
 		game.setInfo(player);
 		player.setJail(true);
 		player.setRolling(false);
-		//this is used for one specific scenario, which is when
-		//the player rolls doubles and gets this card, they can't roll again
 		out.push_back("You're in jail now! Good luck getting out of there...");
 	}
 	else if (type == "lose")
 	{
-		//oof
 		out.push_back("Better luck next time...");
 		game.setInfo(player);
 		player.setBankruptcy(true);
@@ -73,7 +68,6 @@ void CardHandler::handleCard(vector<Player>& curPlayers, Game& game, Player & pl
 	}
 	else if (type == "win")
 	{
-		//make everyone else bankrupt except the player that drew this card
 		for (auto& otherPlayer : curPlayers)
 		{
 			if (otherPlayer.getName() != player.getName())
@@ -88,15 +82,12 @@ void CardHandler::handleCard(vector<Player>& curPlayers, Game& game, Player & pl
 	else if (type == "payEach")
 	{
 		bool keepPaying{ true };
-		//this is used to prevent the bankrupt dialogue to keep printing
-		//which would happen if they had to pay 3 players and went bankrupt after the firtst one
 		for (auto& otherPlayer : curPlayers)
 		{
 			if (otherPlayer.getName() != player.getName())
 			{
 				if(keepPaying)
 				{
-					//make sure player isn't bankrupt before paying
 					if (player.getCash() <= 0)
 					{
 						out.push_back("Oh no! " + player.getName() + " went bankrupt! Better luck next time...");
@@ -108,7 +99,6 @@ void CardHandler::handleCard(vector<Player>& curPlayers, Game& game, Player & pl
 					}
 					else
 					{
-						//remove as much as the player has
 						int amt = (player.getCash() > card.amount) ? card.amount : player.getCash();
 						player.deductCash(amt);
 						otherPlayer.addCash(amt);
@@ -121,7 +111,6 @@ void CardHandler::handleCard(vector<Player>& curPlayers, Game& game, Player & pl
 	}
 	else if (type == "goBack")
 	{
-		//pretty simple
 		player.setCurrentSpot(player.getCurrentSpot() - card.amount);
 		game.setInfo(player);
 		out.push_back("You were moved back " + to_string(card.amount) + " spaces.");
@@ -132,7 +121,6 @@ void CardHandler::handleCard(vector<Player>& curPlayers, Game& game, Player & pl
 	}
 	else if (type == "getOutJail")
 	{
-		//moves them a spot in front of jail, which is space 11
 		player.setCurrentSpot(11);
 		player.setJail(false);
 		game.setInfo(player);
@@ -140,7 +128,6 @@ void CardHandler::handleCard(vector<Player>& curPlayers, Game& game, Player & pl
 	}
 	else if (type == "getPlayer")
 	{
-		//the players they can grab cash from cannot include themselves, so I do this
 		vector<Player> availPlayers;
 		for (auto& other : curPlayers)
 		{
@@ -150,10 +137,7 @@ void CardHandler::handleCard(vector<Player>& curPlayers, Game& game, Player & pl
 			}
 		}
 		Player randomPlayer = Utilities::getRandomElement(availPlayers);
-
-		//a ternary operator:
-		//if they have the card amount, deduct that
-		//if they dont, give em everything they got
+		
 		int amt = (randomPlayer.getCash() > card.amount) ? card.amount : randomPlayer.getCash();
 		randomPlayer.deductCash(amt);
 		player.addCash(amt);
@@ -163,12 +147,9 @@ void CardHandler::handleCard(vector<Player>& curPlayers, Game& game, Player & pl
 		Sleep(2000);
 		if (randomPlayer.getCash()<=0)
 		{
-			//player went bankrupt
 			out.push_back("Oh no! " + randomPlayer.getName() + " went bankrupt! Better luck next time...");
 			randomPlayer.setBankruptcy(true);
 			Utilities::resetOwnership(randomPlayer, game.getSpaces());
-			//set the actual player to randomPlayer to reflect changes made to the copy,
-			//which was grabbed from getRandomElement at line 152
 			affectActual(curPlayers, randomPlayer);
 		}
 	}
@@ -179,12 +160,6 @@ void CardHandler::handleCard(vector<Player>& curPlayers, Game& game, Player & pl
 
 void CardHandler::addCard(Card card)
 {
-	//adds cards based on the type
-
-	//the way I did the randomness is a pretty weird way to do it
-	//it pushes back into the vector based on the percent chance
-	//i made sure all the percents added to 100 for each one so it's actually accurate
-
 	if (card.cardType == "comm")
 	{
 		for (int i{ 0 }; i < card.percentChance; ++i)
@@ -211,25 +186,24 @@ void CardHandler::addCard(Card card)
 Card CardHandler::drawCard(std::string type,Player& player, Game& game)
 {
 	game.displayBoard();
-	int getCollect = rand() % 2; // 50% chance to grab a collectable when you draw a chance or community card
-	vector<Card> collects = player.getCards(); //grab the collectables the player has
+	int getCollect = rand() % 2;
+	vector<Card> collects = player.getCards();
 
-	//both of these if statements are basically the same, just different based on the type
 	if (type == "CHANCE")
 	{
 		cout << "You will now draw a chance card..." << endl;
 		Sleep(2000);
-		if (getCollect == 0) //again, just doing a coin flip here
+		if (getCollect == 0)
 		{
 			cout << "What luck! You also draw a collectable card." << endl;
 			Sleep(1000);
-			Card collect = Utilities::getRandomElement(CardHandler::collectableCards);//get a random collectable card
-			collects.push_back(collect); //add card to player's collectables
+			Card collect = Utilities::getRandomElement(CardHandler::collectableCards);
+			collects.push_back(collect);
 			cout << "You got the following collectable card: " << endl << collect.getDesc() << endl;
 			Sleep(3000);
 			player.setCards(collects);
 		}
-		return Utilities::getRandomElement(CardHandler::chanceCards); //return a random selection from the chance cards
+		return Utilities::getRandomElement(CardHandler::chanceCards);
 	}
 	else if (type == "COMM")
 	{
@@ -251,8 +225,6 @@ Card CardHandler::drawCard(std::string type,Player& player, Game& game)
 
 void affectActual(vector<Player>& curPlayers, Player& toCopy)
 {
-	//a copy is passed into this function, which is then set to the actual player in curPlayers
-	//this was used to make sure changes made to a copy were actually reflected
 	for (auto& player : curPlayers)
 	{
 		if (player.getName() == toCopy.getName())
