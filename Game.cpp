@@ -114,9 +114,6 @@ Game::Game()
 
 void Game::displayBoard()
 {
-	//some iomanip headers being used here for formatting
-
-	//flush everything
 	system("CLS");
 	cout << board;
 	cout << "-----------------------------------------------------------------------" << endl;
@@ -126,10 +123,6 @@ void Game::displayBoard()
 		cout << "|" << playerInfo[i] << setfill(' ') << setw(35 - playerInfo[i].length()) << right << "|" << endl;
 	}
 	cout << "-----------------------------------------------------------------------" << endl;
-
-	//I actually didn't use this gameOutput very much at all
-	//I mostly just flushed the output and then displayed the board and used cout
-	//which was much easier
 	for (auto& str : gameOutput)
 	{
 		cout << str << endl;
@@ -144,7 +137,6 @@ void Game::displayRules()
 
 void Game::setInfo(Player plr)
 {
-	//very simple, just sets up the output with the space and player information correctly
 	boardInfo.clear();
 	playerInfo.clear();
 	int spot = plr.getCurrentSpot();
@@ -159,12 +151,11 @@ void Game::setInfo(Player plr)
 
 void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 {
-
 	bool done{ false };
-	player.setRolling(true); // reset in case they warped last turn
-	while (!done)//not done menu selecting
+	player.setRolling(true);
+	while (!done)
 	{
-		if (getNumPlayers(players) == 1)//if a menu choice made everyone else go bankrupt, such as using a collectable that steals money
+		if (getNumPlayers(players) == 1)
 		{
 			cout << player.getName() << " has won the game! Congratulations!" << endl;
 			Sleep(5000);
@@ -185,7 +176,6 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 				gameOutput.push_back("6 - Use Collectable Card");
 				displayBoard();
 
-				//boolean declarations
 				bool doneUsingCollectables{ false };
 				bool doneTrading{ false };
 				bool doneHotelling{ false };
@@ -196,10 +186,8 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 				bool doneEditing{ false };
 				bool doneHousing{ false };
 
-				//option selecting
 				int ans = Utilities::getIntInRange("Please enter an option. If you wish to roll, type 0: ", 0, 6);
 
-				//vector declarations for properties and such
 				Space* currentSpace = spaces[player.getCurrentSpot()];
 				vector<Space*> prop = Utilities::getProperty(player, spaces);
 				vector<Space*> mortProp = Utilities::getMortgagedProperty(player, spaces);
@@ -211,11 +199,10 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 				switch (ans)
 				{
 				case 0: //they want to exit
-					//set roll to true
 					done = true;
 					break;
 				case 1: //property mortgaging
-					if (prop.empty()) //if they don't have any property
+					if (prop.empty())
 					{
 						cout << "You do not own any property to mortgage..." << endl;
 						Sleep(3000);
@@ -226,21 +213,17 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 						system("CLS");
 						cout << "Here are your owned properties: " << endl;
 
-						//display their properties they can mortgage
 						for (size_t i{ 0 }; i < prop.size(); ++i)
 						{
 							cout << to_string(i + 1) << " - " << prop[i]->toString() << endl << endl;
 						}
 						int choice = Utilities::getIntInRange("Please type the number for which property you want to mortgage.\nIf you want to exit, type 0: ", 0, prop.size());
-						if (choice != 0)//if they don't want to exit
+						if (choice != 0)
 						{
-							//[choice-1] because of indexing starting at 0 and choices starting at 1 for user convenience
 							int mortValue = prop[choice - 1]->getCost() / 2;
 							int numHouses = prop[choice - 1]->getNumHouses();
 							int numHotels = prop[choice - 1]->getNumHotels();
 							int numTurrets = prop[choice - 1]->getNumTurrets();
-
-							//adding houses turrets and hotels to the mortgage value
 							for (int i{ 0 }; i < numHouses; ++i)
 							{
 								mortValue += prop[choice - 1]->getHouseCost() / 2;
@@ -251,14 +234,13 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 							}
 							for (int i{ 0 }; i < numTurrets; ++i)
 							{
-								mortValue += prop[choice - 1]->getHouseCost(); //turret costs twice as much as house, so dividing by 2 after multiplying 2 is redundant
+								mortValue += prop[choice - 1]->getHouseCost();
 							}
 							cout << "Mortgaging this property will give you " << to_string(mortValue) << " dollars." << endl;
 							cout << "This value includes half the cost back for any houses, hotels, and turrets you bought, but they will be removed." << endl;
 							string answer = Utilities::getStringYesNo("Are you sure ?(y/n): ");
 							if (answer == "y" || answer == "Y")
 							{
-								//set everything to 0 since they mortgaged it
 								prop[choice - 1]->setNumHouses(0);
 								prop[choice - 1]->setNumHotels(0);
 								prop[choice - 1]->setNumTurrets(0);
@@ -271,7 +253,7 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 					}
 					break;
 				case 2://lifting mortgages
-					if (mortProp.empty())//they don't have anything mortgaged
+					if (mortProp.empty())
 					{
 						cout << "You do not have any mortgages..." << endl;
 						Sleep(3000);
@@ -281,30 +263,26 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 					{
 						system("CLS");
 						cout << "Here are your mortgaged properties: " << endl; 
-						//display all mortgages that they have
 						for (size_t i{ 0 }; i < mortProp.size(); ++i)
 						{
 							cout << to_string(i + 1) << " - " << mortProp[i]->toString() << endl;
 						}
 						int choice = Utilities::getIntInRange("Please type the number for the mortgage you wish to lift.\nIf you want to exit, type 0: ", 0, mortProp.size());
-						if (choice != 0)//if they don't want to exit
+						if (choice != 0)
 						{
-							//the cost is their choice's cost/2 + 10% interest
 							int cost = (mortProp[choice - 1]->getCost() / 2) + (mortProp[choice - 1]->getCost() / 10);
-
-							//make them choose yes again just to be totally sure
 							cout << "Lifting this mortgage will cost " << to_string(cost) << " dollars.";
 							string answer = Utilities::getStringYesNo("Are you sure ?(y/n): ");
-							if (answer == "y" || answer == "Y")//if they said yes
+							if (answer == "y" || answer == "Y")
 							{
-								if (player.canDeduct(cost))//only lift mortgage if they have it
+								if (player.canDeduct(cost))
 								{
 									player.deductCash(cost);
 									mortProp[choice - 1]->setMortgage();//set the mortgage value to false
 									cout << "Property successfully bought back." << endl;
 									Sleep(3000);
 								}
-								else//dont have enough money to lift it
+								else
 								{
 									cout << "You do not have enough money..." << endl;
 									Sleep(3000);
@@ -314,9 +292,9 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 					}
 					break;
 				case 3://trading section
-					while (!doneTrading)//while player isn't done trading
+					while (!doneTrading)
 					{
-						if (prop.empty())//only let them trade if they have property
+						if (prop.empty())
 						{
 							cout << "You do not have any property to trade with..." << endl;
 							Sleep(3000);
@@ -334,50 +312,49 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 							if (choice != 0)
 							{
 								Player toTrade = tradable[choice - 1];
-								vector<Space*> prop2 = Utilities::getProperty(toTrade, spaces);//the player they are trading's properties
-								if (prop2.empty())//make sure the player they are trading has property as well
+								vector<Space*> prop2 = Utilities::getProperty(toTrade, spaces);
+								if (prop2.empty())
 								{
 									cout << toTrade.getName() << " has no property..." << endl;
 									Sleep(3000);
 								}
 								else
 								{
-									bool doneSelecting{ false };//let them keep selecting properties to offer
-									vector<Space*> availOptions = prop;//the options to choose
-									vector<Space*> playerGive;//what the player gives
-									vector<Space*> playerGet;//what the player gets from the player they're trading with
+									bool doneSelecting{ false };
+									vector<Space*> availOptions = prop;
+									vector<Space*> playerGive;
+									vector<Space*> playerGet;
 									cout << "\nHere are " << toTrade.getName() << "'s" << " properties: " << endl;
 									for (auto& property : prop2)
 									{
-										cout << property->toString() << endl;//list choices
+										cout << property->toString() << endl;
 									}
-									while (!doneSelecting)//while they're not done selecting stuff to offer
+									while (!doneSelecting)
 									{
-										if (availOptions.empty())//they don't have anything left to select
+										if (availOptions.empty())
 										{
 											cout << "No more cards exist to select..." << endl;
 											Sleep(3000);
-											doneSelecting = true;//exit loop
+											doneSelecting = true;
 										}
-										else//they still have options to select
+										else
 										{
 											system("CLS");
 											cout << "Here are your properties: " << endl;
 											for (size_t i{ 0 }; i < availOptions.size(); ++i)
 											{
-												cout << to_string(i + 1) << " - " << availOptions[i]->toString() << endl;//list available options
+												cout << to_string(i + 1) << " - " << availOptions[i]->toString() << endl;
 											}
 											int toRemove = Utilities::getIntInRange("Enter the corresponding number for the properties you wish to offer."
 												"When you are done, hit 0.\n If you want to exit the entire trade, enter -1: ", -1, availOptions.size());
-											if (toRemove == -1)//this ain't it chief, back out
+											if (toRemove == -1)
 											{
 												exitTrade = true;
 												doneSelecting = true;
 												doneTrading = true;
 											}
-											else if (toRemove == 0)//done selecting
+											else if (toRemove == 0)
 											{
-												//make sure they actually selected cards
 												if (playerGive.empty())
 												{
 													cout << "\nYou did not select any cards! Please select at least 1 card to offer." << endl;
@@ -385,31 +362,30 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 												}
 												else
 												{
-													doneSelecting = true;//exit loop
+													doneSelecting = true;
 												}
 											}
 											else
 											{
-												playerGive.push_back(availOptions[toRemove - 1]);//add their selection to what they're giving
+												playerGive.push_back(availOptions[toRemove - 1]);
 												availOptions.erase(availOptions.begin() + (toRemove - 1));
-												//this is to prevent duplicating, i.e. offering multiples of the same exact card
 												cout << "Card was successfully selected for trade." << endl;
 												Sleep(3000);
 											}
 										}
 									}
-									if (!exitTrade)//they didn't back out
+									if (!exitTrade)
 									{
-										doneSelecting = false;//reset the bool so we can use it for the next section
-										availOptions = prop2; //set what's available to the properties the player being traded with has
+										doneSelecting = false;
+										availOptions = prop2;
 									}
 									while (!doneSelecting)
 									{
-										if (availOptions.empty())//if they've selected all possible options
+										if (availOptions.empty())
 										{
 											cout << "No more cards exist to select..." << endl;
 											Sleep(3000);
-											doneSelecting = true;//exit loop
+											doneSelecting = true;
 										}
 										else
 										{
@@ -418,19 +394,16 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 											for (size_t i{ 0 }; i < availOptions.size(); ++i)
 											{
 												cout << to_string(i + 1) << " - " << availOptions[i]->toString() << endl;
-												//list properties available to grab from other player
 											}
 											int toRemove = Utilities::getIntInRange("Enter the corresponding number for the properties you want."
 												"When you are done, hit 0.\n If you want to exit the entire trade, enter -1: ", -1, availOptions.size());
 											if (toRemove == -1)
 											{
-												//they changed their mind, so exit every loop
 												doneSelecting = true;
 												doneTrading = true;
 											}
 											else if (toRemove == 0)
 											{
-												//make sure they actually selected cards
 												if (playerGet.empty())
 												{
 													cout << "You did not select any cards! Please select at least 1 card to take." << endl;
@@ -438,41 +411,36 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 												else
 												{
 													doneSelecting = true;
-													//we're all good here
 												}
 											}
 											else
 											{
 												playerGet.push_back(availOptions[toRemove - 1]);
 												availOptions.erase(availOptions.begin() + (toRemove - 1));
-												//same as above to prevent duplicate trading
 												cout << "Card was successfully selected for trade." << endl;
 												Sleep(3000);
 											}
 										}
 									}
-									//ready to set up player being traded with to confirm the offer:
-									if (!doneTrading)//bool was never set to true, which means we keep going here
+									if (!doneTrading)
 									{
 										system("CLS");
 										cout << player.getName() << " will give the following cards:" << endl;
 										for (auto& property : playerGive)
 										{
-											cout << property->toString() << endl;//list what they give
+											cout << property->toString() << endl;
 										}
 										cout << endl << toTrade.getName() << ", you will give the following cards:" << endl;
 										for (auto& property : playerGet)
 										{
-											cout << property->toString() << endl;//list what they get
+											cout << property->toString() << endl;
 										}
 										cout << endl;
-										if (!toTrade.isAI())//player decision
+										if (!toTrade.isAI())
 										{
-											//let the player being traded with make a decision
 											string doTheTrade = Utilities::getStringYesNo(toTrade.getName() + ", do you accept this offer by " + player.getName() + "?(y/n)");
-											if (doTheTrade == "y" || doTheTrade == "Y")//they said yes
+											if (doTheTrade == "y" || doTheTrade == "Y")
 											{
-												//swap cards ownership
 												for (auto& property : playerGive)
 												{
 													property->setOwner(toTrade.getName());
@@ -483,27 +451,24 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 												}
 												cout << "Trade was successful. Now returning to main menu..." << endl;
 												Sleep(3000);
-												doneTrading = true;//exit entire loop
+												doneTrading = true;
 											}
-											else if (doTheTrade == "n" || doTheTrade == "N")//they rejected
+											else if (doTheTrade == "n" || doTheTrade == "N")
 											{
 												cout << "Trade was rejected! Nothing will happen between both players." << endl;
 												Sleep(1000);
 												cout << "Returning to main menu..." << endl;
 												Sleep(3000);
-												doneTrading = true;//exit entire loop
+												doneTrading = true;
 											}
 										}
 										else
 										{
-											//AI only says yes if they are getting more in return for the trade(literally, more cards).
-											//equal to or less, and the AI will say no
 											cout << "\nThe AI is making a decision based on your offer..." << endl;
 											Sleep(4000);
-											if (playerGive.size() > playerGet.size())//if ai is getting at least 1 more
+											if (playerGive.size() > playerGet.size())
 											{
-												cout << "The AI " << toTrade.getName() << " agreed to your trade." << endl;
-												//swap cards ownership
+												cout << "AI " << toTrade.getName() << " agreed to your trade." << endl;
 												for (auto& property : playerGive)
 												{
 													property->setOwner(toTrade.getName());
@@ -529,7 +494,7 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 									}
 								}
 							}
-							else //they wanted to exit on the player trading selection screen
+							else
 							{
 								doneTrading = true;
 							}
@@ -538,7 +503,7 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 					break;
 				case 4://house,hotel, and turret editing case
 				{
-					while (!doneEditing)//keep letting player build stuff while in loop
+					while (!doneEditing)
 					{
 						system("CLS");
 						cout << "Here are your options:" << endl;
@@ -548,12 +513,12 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 						int choice = Utilities::getIntInRange("Please choose an option. If you want to exit, type 0: ", 0, 3);
 						switch (choice)
 						{
-						case 0://player decided to exit
-							doneEditing = true;//back to main menu
+						case 0:
+							doneEditing = true;
 							break;
 						case 1://house building case
 							sets = Utilities::getOwnedSets(player, spaces, colorSets);
-							if (sets.empty())//make sure they own color sets before letting them build a house
+							if (sets.empty())
 							{
 								cout << "You do not own any sets of properties..." << endl;
 								Sleep(3000);
@@ -561,50 +526,44 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 							}
 							else
 							{
-								while (!doneBuilding)//keep letting them select property color sets
+								while (!doneBuilding)
 								{
 									system("CLS");
 									cout << "Here are the sets you own: " << endl;
 									for (size_t i{ 0 }; i < sets.size(); ++i)
 									{
-										//list the color sets they own
 										cout << to_string(i + 1) << " - " << sets[i][0]->getColor() << ":" << endl;
 									}
-									doneHousing = false;//reset to false in case they build houses then exit to this loop
+									doneHousing = false;
 									int ans = Utilities::getIntInRange("Please select which color of property you want to build houses on.\nIf you wish to exit, type 0: ", 0, sets.size());
 									if (ans == 0) //player wants to exit
 									{
-										//exit all loops
 										doneBuilding = true;
 										doneEditing = true;
 									}
 									else
 									{
-										while (!doneHousing)//keep letting them pick houses to build on the color set they're on
+										while (!doneHousing)
 										{
 											system("CLS");
-											vector<Space*>propSet = sets[ans - 1]; //the vector of properties in the set they chose
+											vector<Space*>propSet = sets[ans - 1];
 											cout << "Here are the properties in that set you can build houses for: " << endl << endl;;
 											for (size_t i{ 0 }; i < propSet.size(); ++i)
 											{
-												//list all the stuff
 												cout << to_string(i + 1) << " - " << propSet[i]->toString() << "Number of houses: " << propSet[i]->getNumHouses()
 													<< "|Number of hotels: " << propSet[i]->getNumHotels() << "|" << endl << endl;
 											}
 											int ans = Utilities::getIntInRange("Please select which property you wish to build houses for.\nIf you wish to exit, type 0: ", 0, propSet.size());
-											if (ans == 0)//exit just this loop, and return to color selection
+											if (ans == 0)
 											{
 												doneHousing = true;
 											}
 											else
 											{
-												//assume they can build unless we test conditions and they can't
 												bool canBuild{ true };
-												Space* toBuild = propSet[ans - 1]; //the space they will build on
+												Space* toBuild = propSet[ans - 1];
 												if (toBuild->getNumHouses() < 4)
 												{
-													//can only build if every other property in set has the same amount of houses or greater
-													//that's how the uneven building math works out
 													for (auto& prop : propSet)
 													{
 														if (prop->getName() != toBuild->getName())
@@ -615,37 +574,37 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 															}
 														}
 													}
-													if (toBuild->getNumHotels() > 0)//can't build a house if there's a hotel there
+													if (toBuild->getNumHotels() > 0)
 													{
 														cout << "A hotel exists on that property. You may not build houses while a hotel is there.\nPlease select another." << endl;
 														Sleep(4000);
 													}
-													else//if there isn't a hotel there
+													else
 													{
-														if (canBuild)//if the above conditions didn't make this false
+														if (canBuild)
 														{
 															int costToBuild = toBuild->getHouseCost();
 															if (player.canDeduct(costToBuild))//if they have enough
 															{
 																player.deductCash(costToBuild);
-																toBuild->addHouse();//add a house to the property
+																toBuild->addHouse();
 																cout << "\nHouse was successfully built." << endl;
 																Sleep(2000);
 															}
-															else//didn't have enough money
+															else
 															{
 																cout << "\nYou lack sufficient funds to build a house. Please select another property." << endl;
 																Sleep(3000);
 															}
 														}
-														else//uneven build condition tested to true
+														else
 														{
 															cout << "\nYou are attempting to build unevenly. Please select another property." << endl;
 															Sleep(3000);
 														}
 													}
 												}
-												else//number of houses was greater than or equal to 4
+												else
 												{
 													cout << "\nNumber of houses on that property is already at max.\nPlease select another. " << endl;
 													Sleep(3000);
@@ -655,76 +614,74 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 									}
 								}
 							}
-							break;//end house building switch case
-						case 2://hotel building switch case starts
+							break;
+						case 2://hotel building switch case
 							sets = Utilities::getHotellableSets(player, spaces, colorSets);
-							if (sets.empty())//they don't have any color sets with the max houses built
+							if (sets.empty())
 							{
 								cout << "You do not own any sets of properties that have the max number of houses built on every property..." << endl;
 								Sleep(6000);
-								doneEditing = true; //back to main menu
+								doneEditing = true;
 							}
-							else//they have at least one color set with all 4 houses built on every property
+							else
 							{
-								while (!doneHotelling)//while they want to keep selecting sets
+								while (!doneHotelling)
 								{
 									system("CLS");
-									doneBuildingHotels = false;//reset to false in case they build a hotel then back out to this menu and want to keep going
+									doneBuildingHotels = false;
 									cout << "Here are the sets you own which you can build hotels: " << endl;
 									for (size_t i{ 0 }; i < sets.size(); ++i)
 									{
-										//list color sets with 4 houses built everywhere
 										cout << to_string(i + 1) << " - " << sets[i][0]->getColor() << ":" << endl;
 									}
 									int ans = Utilities::getIntInRange("Please select which color of property you want to build a hotel on.\nIf you wish to exit, type 0: ", 0, sets.size());
-									if (ans == 0)//back to color sets
+									if (ans == 0)
 									{
 										doneHotelling = true;
 										doneBuildingHotels = true;
 									}
-									else//they want to build
+									else
 									{
-										while (!doneBuildingHotels)//keep letting them select properties in the color set they chose
+										while (!doneBuildingHotels)
 										{
 											system("CLS");
-											vector<Space*> propSet = sets[ans - 1];//the color set they chose
+											vector<Space*> propSet = sets[ans - 1];
 											cout << "Here are the properties in that set you can build hotels for: " << endl;
 											for (size_t i{ 0 }; i < propSet.size(); ++i)
 											{
-												//list properties in that set
 												cout << to_string(i + 1) << " - " << propSet[i]->toString() << "Number of hotels: " << propSet[i]->getNumHotels() << "|" << endl << endl;
 											}
 											int ans = Utilities::getIntInRange("Please select which property you wish to build hotels for.\nIf you wish to exit, type 0: ", 0, propSet.size());
-											if (ans == 0)//exit back to color selection
+											if (ans == 0)
 											{
 												doneBuildingHotels = true;
 											}
-											else//they want to build hotel
+											else
 											{
 												bool canBuild{ true };
-												Space* toBuild = propSet[ans - 1]; //the property to build a hotel on
-												if (toBuild->getNumHotels() >= 1)//hotel already exists
+												Space* toBuild = propSet[ans - 1];
+												if (toBuild->getNumHotels() >= 1)
 												{
 													canBuild = false;
 												}
-												if (canBuild)//if above didn't test to false
+												if (canBuild)
 												{
-													int costToBuild = toBuild->getHouseCost();//hotel cost same as house
-													if (player.canDeduct(costToBuild))//if they have enough
+													int costToBuild = toBuild->getHouseCost();
+													if (player.canDeduct(costToBuild))
 													{
 														player.deductCash(costToBuild);
-														toBuild->addHotel();//add a hotel
-														toBuild->setNumHouses(0);//hotel negates all houses and sets them to 0
+														toBuild->addHotel();
+														toBuild->setNumHouses(0);
 														cout << "\nHotel was successfully built." << endl;
 														Sleep(2000);
 													}
-													else//didn't have enough money
+													else
 													{
 														cout << "\nYou lack sufficient funds to build a hotel. Please select another property." << endl;
 														Sleep(3000);
 													}
 												}
-												else//they already built a hotel
+												else
 												{
 													cout << "\nHotel already built on that property.\nPlease select another." << endl;
 													Sleep(3000);
@@ -734,18 +691,18 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 									}
 								}
 							}
-							break;//end hotel switch case
+							break;
 						case 3://turret switch case starts
-							if (prop.empty())//player didn't have any property owned
+							if (prop.empty())
 							{
 								cout << "You do not have any property to build turrets on..." << endl;
 								Sleep(6000);
 								doneEditing = true;
 							}
-							else//they have property
+							else
 							{
 								doneTurreting = false;
-								while (!doneTurreting)//keep letting them select properties to build turrets on
+								while (!doneTurreting)
 								{
 									system("CLS");
 									cout << "Here are the properties you can build turrets on:" << endl;
@@ -755,35 +712,35 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 										cout << to_string(i + 1) << " - " << prop[i]->toString() << "Number of turrets: " << prop[i]->getNumTurrets() << "|" << endl << endl;
 									}
 									int ans = Utilities::getIntInRange("Please select which property you want to build a turret on.\nIf you wish to exit, type 0: ", 0, prop.size());
-									if (ans == 0)//back to editing selection screen
+									if (ans == 0)
 									{
 										doneTurreting = true;
 									}
-									else//they wanna build a turret
+									else
 									{
 										bool canBuild{ true };
-										Space* toBuild = prop[ans - 1]; //property to build turret on
-										if (toBuild->getNumTurrets() == 1)//turret already exists, they can only build one
+										Space* toBuild = prop[ans - 1]; 
+										if (toBuild->getNumTurrets() == 1)
 										{
 											canBuild = false;
 										}
-										if (canBuild)//if above did not test false
+										if (canBuild)
 										{
-											int costToBuild = toBuild->getHouseCost() * 2;//turret cost is double the house cost
-											if (player.canDeduct(costToBuild))//if they got enough
+											int costToBuild = toBuild->getHouseCost() * 2;
+											if (player.canDeduct(costToBuild))
 											{
 												player.deductCash(costToBuild);
-												toBuild->setNumTurrets(1);//add a turret basically(i was too lazy to make an addTurret() method in property)
+												toBuild->setNumTurrets(1);
 												cout << "\nTurret was successfully built." << endl;
 												Sleep(2000);
 											}
-											else//not enough money
+											else
 											{
 												cout << "\nYou lack sufficient funds to build a turret. Please select another property." << endl;
 												Sleep(3000);
 											}
 										}
-										else//already built a turret
+										else
 										{
 											cout << "\nTurret already built on that property.\nPlease select another." << endl;
 											Sleep(3000);
@@ -794,11 +751,11 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 						}
 					}
 				}
-				break;//end turret switch case
-				case 5://railroad warp switch case starts
-					if (currentSpace->getPropertyType() == "RAILROAD")//make sure they're actually on a railroad
+				break;
+				case 5://railroad warp switch case
+					if (currentSpace->getPropertyType() == "RAILROAD")
 					{
-						vector<Space*> availRailroads;//can't warp to the one that they're on
+						vector<Space*> availRailroads;
 						for (auto& rail : railroads)
 						{
 							if (rail->getName() != spaces[player.getCurrentSpot()]->getName())
@@ -806,77 +763,71 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 								availRailroads.push_back(rail);
 							}
 						}
-						if (availRailroads.empty())//they don't own any besides the one they're on
+						if (availRailroads.empty())
 						{
 							cout << "You do not own any other railroads." << endl;
 							Sleep(3000);
 						}
-						else//they own at least one
+						else
 						{
 							system("CLS");
 							cout << "Here are the railroads you can warp to: \n\n";
 							for (size_t i{ 0 }; i < availRailroads.size(); ++i)
 							{
-								//list choices
 								cout << to_string(i + 1) << " - " << availRailroads[i]->toString() << endl;
 							}
 							int ans = Utilities::getIntInRange("Please select a railroad. If you would like to exit, type 0:", 0, railroads.size());
-							if (ans != 0)//if they decided to warp
+							if (ans != 0)
 							{
-								Space* toWarp = availRailroads[ans - 1]; //the railroad to warp to
+								Space* toWarp = availRailroads[ans - 1];
 								player.setCurrentSpot(Utilities::getIndexPtrObj(spaces, toWarp));
-								//getIndexPtrObj is called to get the spot where the railroad they selected resides
-								//i then warp them, which ignores collecting $200 at GO anyway
 								setInfo(player);
 								displayBoard();
 								cout << "You have successfully warped to " << toWarp->getName() << "." << endl;
-								player.setRolling(false); //skip roll since they warped
+								player.setRolling(false);
 								Sleep(3000);
 							}
 						}
 					}
-					else//weren't on a railroad
+					else
 					{
 						cout << "You are not currently on a railroad. Please select another option." << endl;
 						Sleep(3000);
 					}
-					break;//end railroad switch case
+					break;
 				case 6://start collectable using switch case
-					if (collectables.empty())//they don't have any collectables
+					if (collectables.empty())
 					{
 						cout << "You do not have any collectable cards. Please select another option." << endl;
 						Sleep(3000);
 					}
-					else//they do have collectables
+					else
 					{
 						system("CLS");
 						cout << "Here are your collectable cards: " << endl << endl;
 						for (size_t i{ 0 }; i < collectables.size(); ++i)
 						{
-							//list choices
 							cout << to_string(i + 1) << " - " << collectables[i].getDesc() << endl;
 						}
 						int ans = Utilities::getIntInRange("Please select a card to use. If you would like to exit, type 0:", 0, collectables.size());
-						if (ans != 0)//if they still wanna use a card
+						if (ans != 0)
 						{
 							Card toUse = collectables[ans - 1];
-							//special case for using a get out of jail card
-							//we have to make sure that they're actually in jail when using it
-							if (toUse.getEffect() == "getOutJail")//if they're trying to get out of jail
+							if (toUse.getEffect() == "getOutJail")
 							{
-								if (player.getCurrentSpot() == 10)//make sure they're on the jail space
+								if (player.getCurrentSpot() == 10)
 								{
 									CardHandler::handleCard(players, *this, player, toUse);
 									collectables.erase(collectables.begin() + (ans - 1));
 									player.setCards(collectables);
 								}
-								else//they're not in jail, so ignore them
+								else
 								{
 									cout << "You are not currently in jail!" << endl;
 									Sleep(3000);
 								}
 							}
-							else//they're not using a get out of jail card, so just call handleCard and that's it
+							else
 							{
 								CardHandler::handleCard(players, *this, player, toUse);
 								collectables.erase(collectables.begin() + (ans - 1));
@@ -884,17 +835,15 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 							}
 						}
 					}
-					break;//end collectables switch case
+					break;
 				}
 			}
 			else
-			//another huge section of code for the AI to automatically do stuff before their turn, with somewhat intelligent choices
+			//AI section of code
 			{
 				displayBoard();
 				cout << "AI " << player.getName() << " is deciding what to do before they roll..." << endl;
 				Sleep(3000);
-
-				//boolean declarations
 				bool doneMortgaging{ false };
 				bool doneHousing{ false };
 				bool doneHotelling{ false };
@@ -904,9 +853,8 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 				bool doneBuildingTurrets{ false };
 				bool doneUsingCollectables{ false };
 
-				//vector declarations for stuff the AI has
 				vector<Space*> AIhotSets = Utilities::getProperty(player, spaces);
-				while (!doneMortgaging)//AI will keep mortgaging while their money is low
+				while (!doneMortgaging)
 				{
 					vector<Space*> AIprop = Utilities::getProperty(player, spaces);
 					if (!AIprop.empty())
@@ -917,14 +865,8 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 							cout << player.getName() << " is going to mortgage a property." << endl;
 							Sleep(2000);
 							int AImortValue{ 0 };
-
-							//I cant do rand() % 0 here, so i use a ternary operator:
-							//if the size of the vector is 1 or less, just grab the 0th element, otherwise:
-							//grab a random index from ( 0 ) to ( the size of the vector - 1 )
-							//the minus one is to prevent going out of bounds(vector[vector.size()] will be out of range)
 							int randIndex = (AIprop.size() > 1) ? rand() % (AIprop.size() - 1) : 0;
 
-							//stuff below is similar to above, just adds whatever the AI has built to the mortgage value
 							AImortValue = AIprop[randIndex]->getCost() / 2;
 							int numHouses = AIprop[randIndex]->getNumHouses();
 							int numHotels = AIprop[randIndex]->getNumHotels();
@@ -951,28 +893,28 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 							cout << player.getName() << " received " << AImortValue << " dollars for mortgaging " << AIprop[randIndex]->getName() << ".\n";
 							Sleep(3000);
 						}
-						else//AI exits loop since they now have enough cash
+						else
 						{
 							doneMortgaging = true;
 						}
 					}
-					else//AI had no property to mortgage so just exit the loop anyway
+					else
 					{
 						doneMortgaging = true;
 					}
-				}//end mortgaging loop
+				}
 
 				//start mortgage lifting loop
 				while (!doneLiftingMortgages)
 				{
 					vector<Space*> AImortProp = Utilities::getMortgagedProperty(player, spaces);
-					if (!AImortProp.empty())//AI checks if it has and proprety to mortgage
+					if (!AImortProp.empty())
 					{
 						//AI only lifts mortgage if they have 5* the cost to lift it
 						for (auto& prop : AImortProp)
 						{
 							int cost = (prop->getCost() / 2) + (prop->getCost() / 10);
-							if (player.getCash() > (cost * 5))//has at least 5 times the cost of lifting
+							if (player.getCash() > (cost * 5))
 							{
 								cout << player.getName() << " is going to lift a mortgage." << endl;
 								Sleep(2000);
@@ -983,17 +925,17 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 								cout << player.getName() << " lifted their mortgage on " << prop->getName() << ".\n";
 								Sleep(3000);
 							}
-							else//doesn't have enough, so just exit the loop
+							else
 							{
 								doneLiftingMortgages = true;
 							}
 						}
 					}
-					else//doesn't have anything to mortgage, so just exit the loop
+					else
 					{
 						doneLiftingMortgages = true;
 					}
-				}//end mortgage lifting loop
+				}
 
 				while (!doneBuildingHouses)//start house building loop
 				{
@@ -1001,43 +943,39 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 					//and keep doing it until they don't have a reasonable amount of cash
 					displayBoard();
 					vector<vector<Space*>> AIsets = Utilities::getOwnedSets(player, spaces, colorSets);
-					if (!AIsets.empty())//doesn't have any color sets
+					if (!AIsets.empty())
 					{
-						//AI only builds a house if they have at least 3* the cost of the house
-						for (auto& propSet : AIsets)//for each color set they got
+						for (auto& propSet : AIsets)
 						{
 							doneHousing = true;
 							for (auto& prop : propSet)
 							{
 								if (prop->getNumHouses() < 4)
-									//if at least one house isn't at max the AI can keep building on the set
 								{
 									doneHousing = false;
 								}
 							}
-							while (!doneHousing)//AI keeps building on the set as long as it can
+							while (!doneHousing)
 							{
-								for (auto& prop : propSet)//for each prop in each color set
+								for (auto& prop : propSet)
 								{
-									if (prop->getNumHouses() < 4)//if the number of houses is not at the max
+									if (prop->getNumHouses() < 4)
 									{
-										bool canBuild{ true };//assume they can build
-										if (player.getCash() > prop->getHouseCost() * 3)//AI makes sure it has sufficient cash
+										bool canBuild{ true };
+										if (player.getCash() > prop->getHouseCost() * 3)
 										{
-											for (auto& otherProp : propSet)//make sure we aren't building unevenly
+											for (auto& otherProp : propSet)
 											{
 												if (otherProp->getName() != prop->getName())
 												{
 													if (otherProp->getNumHouses() < prop->getNumHouses())
 													{
-														//building unevenly, so we can't build
 														canBuild = false;
 													}
 												}
 											}
 											if (canBuild)
 											{
-												//we can build and have cash, so AI builds a house
 												prop->addHouse();
 												player.deductCash(prop->getHouseCost());
 												setInfo(player);
@@ -1046,13 +984,13 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 												Sleep(2000);
 											}
 										}
-										else//AI doesn't have sufficient cash, so exit the entire loop
+										else
 										{
 											doneHousing = true;
 											doneBuildingHouses = true;
 										}
 									}
-									else//number of houses is at max, so exit the inner loop
+									else
 									{
 										doneHousing = true;
 									}
@@ -1061,7 +999,7 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 						}
 						doneBuildingHouses = true;
 					}
-					else//AI has no sets, so exit the loop
+					else
 					{
 						doneBuildingHouses = true;
 					}
@@ -1070,21 +1008,18 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 				{
 					displayBoard();
 					vector<vector<Space*>> AIhotSets = Utilities::getHotellableSets(player, spaces, colorSets);
-					if (!AIhotSets.empty())//check if AI has any sets they can build on
+					if (!AIhotSets.empty())
 					{
 						//AI only builds a house if they have at least 3* the cost of the house
 						for (auto& propSet : AIhotSets)
 						{
-							//let AI build hotels on each property in each set if the num is not already 1, and builds evenly
 							for (auto& prop : propSet)
 							{
 								if (prop->getNumHotels() < 1)
 								{
 									bool canBuild{ true };
-									//again, AI only builds if they have 3* the cost
 									if (player.getCash() > prop->getHouseCost() * 3)
 									{
-										//uneven build checking
 										for (auto& otherProp : propSet)
 										{
 											if (otherProp->getName() != prop->getName())
@@ -1105,24 +1040,24 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 											Sleep(2000);
 										}
 									}
-									else//not enough
+									else
 									{
 										doneBuildingHotels = true;
 									}
 								}
-								else//number of hotels already at max
+								else
 								{
 									doneBuildingHotels = true;
 								}
 							}
 						}
 					}
-					else//no sets to build on
+					else
 					{
 						doneBuildingHotels = true;
 					}
 				}
-				while (!doneBuildingTurrets)//automatic turret building loop, basically the same as above but with turrets
+				while (!doneBuildingTurrets)
 				{
 					displayBoard();
 					vector<Space*> properties = Utilities::getProperty(player, spaces);
@@ -1134,10 +1069,9 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 							if (prop->getNumTurrets() < 1)
 							{
 								bool canBuild{ true };
-								//3 * the turret cost is the same as 6 * the house cost(turret costs twice as much as a house)
+								//3 * the turret cost is the same as 6 * the house cost
 								if (player.getCash() > prop->getHouseCost() * 6)
 								{
-									//uneven build checking
 									for (auto& otherProp : properties)
 									{
 										if (otherProp->getName() != prop->getName())
@@ -1158,18 +1092,18 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 										Sleep(2000);
 									}
 								}
-								else//not enough
+								else
 								{
 									doneBuildingTurrets = true;
 								}
 							}
-							else//number of turrets already at max
+							else
 							{
 								doneBuildingTurrets = true;
 							}
 						}
 					}
-					else//no property to build turrets on
+					else
 					{
 						doneBuildingTurrets = true;
 					}
@@ -1177,12 +1111,10 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 				while (!doneUsingCollectables)//automatic collectable usage
 				{
 					vector<Card> AIcards = player.getCards();
-					if (!AIcards.empty())//check if AI has any
+					if (!AIcards.empty())
 					{
-						for (auto& card : AIcards)//automatically uses them
+						for (auto& card : AIcards)
 						{
-							//exceptions exist for these two types of collectable cards
-							//if the card effect isn't an exception, AI just uses it
 							if (card.getEffect() != "getOutJail" || card.getEffect() != "doubleRoll")
 							{
 								cout << player.getName() << " is going to use a collectable." << endl;
@@ -1192,7 +1124,6 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 							}
 							else if (card.getEffect() == "getOutJail")
 							{
-								//gotta check if the AI is actually in jail, if so they will use it
 								if (player.isInJail())
 								{
 									cout << player.getName() << " is going to use a collectable." << endl;
@@ -1203,7 +1134,6 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 							}
 							else if (card.getEffect() == "doubleRoll")
 							{
-								//doubling roll does nothing in jail, so AI doesn't use this if they're in jail
 								if (!player.isInJail())
 								{
 									cout << player.getName() << " is going to use a collectable." << endl;
@@ -1217,12 +1147,12 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 						}
 						doneUsingCollectables = true;
 					}
-					else//no collectable cards to use
+					else
 					{
 						doneUsingCollectables = true;
 					}
 				}
-				done = true;//entire loop finished
+				done = true;
 			}
 		}
 	}
@@ -1236,7 +1166,7 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 		int possibleAI = 6 - numPlayers;
 		int numAI = 0;
 
-		if (possibleAI > 0)//changes range based on number of players picked above
+		if (possibleAI > 0)
 		{
 			string choice = Utilities::getStringYesNo("Would you like to play against AI?(y/n): ");
 			if (choice == "y")
@@ -1246,7 +1176,7 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 					string prompt = "How many AI would you like to play against?(1-" + to_string(possibleAI) + "):";
 					numAI = Utilities::getIntInRange(prompt, 0, possibleAI);
 				}
-				else//special exception
+				else
 				{
 					cout << "You have 5 players, so the game will put you against 1 AI.";
 					numAI = 1;
@@ -1255,13 +1185,12 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 		}
 
 		for (int i{ 1 }; i <= numPlayers; ++i)
-			//prompt each player for a name, and make sure it fits limit, then make a Player object for each of them
 		{
 			cout << "Player " << to_string(i) << ", it's time to enter your name." << endl;
 			string name = Utilities::getStringLimit("Please enter a name(1-10 characters): ", 10);
 			cout << "Name fits limit." << endl;
 			Player p{ name,0,0,false,false,false };
-			players.push_back(p);//add them to the players
+			players.push_back(p);
 		}
 
 		vector<string> possibleNames{ "Carl the Camel","Decius the Dog","Robert the Rabbit","Bob the Bear",
@@ -1273,7 +1202,6 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 			cout << "The AI will now be generated..." << endl;
 			for (int i{ 0 }; i < numAI; ++i)
 			{
-				//gets random name from the vector of possibleNames
 				string name = Utilities::removeRandomElement(possibleNames);
 				Player p{ name,0,0,false,false,true };
 				//key difference here is that AI is set to true on the last parameter here
@@ -1292,7 +1220,6 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 							  "3 - Everybody rolls a 1 and a 2(for battle testing) - this overrides option 2, and rolling to get out of jail is ignored",
 							  "4 - All property is randomly assigned ownership throughout players(for trade testing)",
 							  "5 - All property is assigned ownership to player 1",
-							//  "6 - All spaces are assigned to be community/chance chests(for various card testing)"
 							 };
 		while (!doneCheating)
 		{
@@ -1300,14 +1227,13 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 			cout << "Here are the following cheats you can enable: " << endl << endl;
 			for (size_t i{ 0 }; i < cheats.size(); ++i)
 			{
-				//list cheats they can use
 				cout << cheats[i] << endl;
 			}
 			cout << endl;
 			int ans = Utilities::getIntInRange("Which cheats would you like to enable? If you are done, hit 0: ", 0, 6);
 			switch (ans)
 			{
-			case 0://doesn't wanna cheat or finished
+			case 0:
 				doneCheating = true;
 				break;
 			case 1://$1,000,000 cash cheat
@@ -1356,8 +1282,6 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 				break;
 			}
 		}
-		//ternary operator:
-		//if infinite cash is enabled, set it to 1,000,000, otherwise set it to the standard, which is 1500
 		int toLoan = (infCash == true) ? 1'000'000 : 1500;
 		cout << "The banker will now loan every player $" + to_string(toLoan) + " to start the game." << endl;
 		for (auto& player : players)
@@ -1373,9 +1297,6 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 
 	void Game::setCards()
 	{
-		//just a bunch of card adding, not much to explain here
-
-		//community cards
 		CardHandler::addCard(Card{ "comm","get",10,5,"You win a contest for the world's ugliest person - you get $10" });
 		CardHandler::addCard(Card{ "comm","pay",50,7,"Your toilet breaks. You must pay the plumber $50."});
 		CardHandler::addCard(Card{ "comm","get",100,2,"You get elected as mayor and get $100." });
@@ -1391,7 +1312,6 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 		CardHandler::addCard(Card{ "comm","get",30,5,"You win $30 off of a scratch ticket." });
 		CardHandler::addCard(Card{ "comm","pay",50,5,"You lose $50 wasting money on scratch tickets." });
 
-		//chance cards
 		CardHandler::addCard(Card{ "chance","lose",0,2,"You waste all your money on casino slots! You go bankrupt!" });
 		CardHandler::addCard(Card{ "chance","win",50,1,"You hide in a cave while everyone else gets robbed and goes bankrupt. You win!" });
 		CardHandler::addCard(Card{ "chance","pay",200,5,"You must pay the banker $200." });
@@ -1408,7 +1328,6 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 		CardHandler::addCard(Card{ "chance","goBack",5,3,"You see a dog 5 spaces back and run towards it." });
 		CardHandler::addCard(Card{ "chance","goBack",2,10,"You left your wallet 2 spaces back and have to go back for it." });
 
-		//collectables
 		CardHandler::addCard(Card{ "collect","get",25,20,"This card will grant you $25 from the bank." });
 		CardHandler::addCard(Card{ "collect","get",50,10,"This card will grant you $50 from the bank." });
 		CardHandler::addCard(Card{ "collect","get",100,5,"This card will grant you $100 from the bank." });
@@ -1430,7 +1349,6 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 
 	int Game::getNumPlayers(vector<Player>& curPlayers)
 	{
-		//gets the players who aren't bankrupt
 		int count{ 0 };
 		for (auto& player : curPlayers)
 		{
@@ -1444,7 +1362,6 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 
 	int Game::rollDie()
 	{
-		//simple math to get 1-6 roll
 		return (rand() % 6) + 1;
 	}
 
@@ -1454,12 +1371,11 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 		int inGame = getNumPlayers(curPlayers);
 		vector<string> jailChoices{ "1 - Attempt to roll a double",
 									"2 - Pay the $50(this will bankrupt you if you cannot pay it)" };
-		while (inGame >= 2)//while at least 2 people aren't bankrupt
+		while (inGame >= 2)
 		{
-			//check special conditions first before letting them roll 
 			for (auto& player : curPlayers)
 			{
-				inGame = getNumPlayers(curPlayers);//redeclared here in case someone goes bankrupt before their turn starts
+				inGame = getNumPlayers(curPlayers);
 				if (inGame > 1)
 				{
 					setInfo(player);
@@ -1468,24 +1384,23 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 					{
 						setInfo(player);
 						displayBoard();
-						doStuffBeforeRoll(player, curPlayers);//calls the member function inside of this class to do menu stuff before turn
+						doStuffBeforeRoll(player, curPlayers);
 						gameOutput.clear();
 						displayBoard();
 						if (player.isInJail() == true)
 						{
-							player.setRolling(false);//don't let them roll initially
+							player.setRolling(false);
 							cout << "Since you are in jail, you must pay a $50 fine or attempt to roll doubles.\nAfter 2 failed attempts to roll doubles, you must pay up." << endl;
 							Sleep(4000);
-							if (player.getJailAttempts() < 2)//if they haven't already tried to get out of jail rolling doubles twice
+							if (player.getJailAttempts() < 2)
 							{
-								if (!player.isAI())//player makes decision
+								if (!player.isAI())
 								{
 									cout << "You have not yet failed 2 attempts, and are at " << to_string(player.getJailAttempts()) << " attempts." << endl;
 									cout << "Here are your choices: " << endl;
 									for (size_t i{ 0 }; i < jailChoices.size(); ++i)
 									{
 										cout << jailChoices[i] << endl;
-										//list choices
 									}
 									cout << endl;
 									int choice = Utilities::getIntInRange("What would you like to do?: ", 1, jailChoices.size());
@@ -1507,7 +1422,6 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 												Sleep(3000);
 												player.setJail(false);
 												player.setRolling(true);
-												//i decided to let them do their turn if they roll doubles, but they roll again
 											}
 											else
 											{
@@ -1519,12 +1433,12 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 												player.setRolling(false);
 											}
 										}
-										break;//end double rolling case
+										break;
 										case 2://just pay 50 case
 										{
 											displayBoard();
 											player.deductCash(50);
-											if (player.getCash() <= 0)//went bankrupt paying the 50 dollars
+											if (player.getCash() <= 0)
 											{
 												player.setBankruptcy(true);
 												Utilities::resetOwnership(player, spaces);
@@ -1532,16 +1446,15 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 												Sleep(3000);
 												player.setRolling(false);
 											}
-											else//player had enough
+											else
 											{
 												cout << "$50 dollars was subtracted, and you are now out of jail." << endl;
 												Sleep(3000);
 												player.setJail(false);
 												player.setRolling(true);
-												//they paid so might as well let them roll
 											}
 										}
-										break;//end pay 50 case
+										break;
 									}
 								}
 								else//AI makes decision
@@ -1569,7 +1482,7 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 										player.setRoll(roll1 + roll2);
 										cout << player.getName() << " rolled a " << to_string(roll1) << " and a " << to_string(roll2) << ".\n";
 										Sleep(2000);
-										if (roll1 == roll2)//AI rolled doubles
+										if (roll1 == roll2)
 										{
 											cout << player.getName() << " rolled doubles! Wowee!" << endl;
 											Sleep(3000);
@@ -1586,7 +1499,7 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 									}
 								}
 							}
-							else//they're already at 2 jail attempts now
+							else
 							{
 								displayBoard();
 								cout << "Since you have 2 failed attempts to rolled doubles, you will now be charged $50. Bankruptcy is possible." << endl;
@@ -1608,12 +1521,12 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 								}
 							}
 						}
-						if (player.canRoll())//check if the playe can roll based on the above
+						if (player.canRoll())
 						{
 							int doublesCount{ 0 };
 							bool inJail{ false };
-							bool keepRolling{ true }; //used for doubles module
-							while (keepRolling)//player keeps rolling doubles then keep going
+							bool keepRolling{ true }; 
+							while (keepRolling)
 							{
 								gameOutput.clear();
 								displayBoard();
@@ -1631,23 +1544,23 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 									roll2 = 2;
 								}
 								player.setRoll(roll1 + roll2);
-								if (player.canDoubleRoll())//used the double collectable which doubles their roll
+								if (player.canDoubleRoll())
 								{
 									player.setRoll(player.getRoll() * 2);
 									cout << "Since you used a collectable to double your roll, your roll was doubled to " << player.getRoll() << ".\n";
 								}
 								cout << "You roll a " << to_string(roll1) << " and a " << to_string(roll2) << ".\n";
 								Sleep(2000);
-								if (roll1 == roll2)//if they rolled doubles
+								if (roll1 == roll2)
 								{
 									cout << "You rolled doubles!" << endl;
 									Sleep(3000);
-									player.setDoublesRolled(player.getDoublesRolled() + 1);//add 1 to the amount of times they've rolled doubles
-									keepRolling = true;//keep going since they rolled doubles
-									if (player.getDoublesRolled() == 3)//check if it's the 3rd time they have
+									player.setDoublesRolled(player.getDoublesRolled() + 1);
+									keepRolling = true;
+									if (player.getDoublesRolled() == 3)
 									{
-										keepRolling = false;//can't keep rolling
-										player.setCurrentSpot(jail);//put them in jail
+										keepRolling = false;
+										player.setCurrentSpot(jail);
 										setInfo(player);
 										displayBoard();
 										cout << "Oh no! You rolled 3 doubles and are now in jail!\nAt least you got 2 turns before that..." << endl;
@@ -1655,24 +1568,23 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 										Sleep(5000);
 									}
 								}
-								else//they didn't roll doubles, so exit the loop
+								else
 								{
 									keepRolling = false;
 								}
 								if (!player.isInJail())
-									//make sure they're not in jail as a result of rolling(such as landing on GO TO JAIL)
 								{
-									displayBoard(); //flush the output besides board
+									displayBoard(); 
 									int start = player.getCurrentSpot();
 									int toMove = start + player.getRoll();
 									for (int i{ start + 1 }; i <= toMove; ++i)
 									{
-										int actual = i % 40; //range checking
+										int actual = i % 40; 
 										player.setCurrentSpot(actual);
 										setInfo(player);
 										displayBoard();
 										cout << player.getName() << ", you are now moving." << endl;
-										if (spaces[actual]->getType() == "GO_SPACE")//check if they passed GO
+										if (spaces[actual]->getType() == "GO_SPACE")
 										{
 											player.addCash(200);
 											setInfo(player);
@@ -1680,29 +1592,22 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 											cout << "You land on GO! Take this $200!" << endl;
 											Sleep(3000);
 										}
-										Sleep(500);//to create a sort of space walking effect
+										Sleep(500);
 									}
-									//call the handle method of SpaceHandler depending on where they landed
 									SpaceHandler::handle(*this, player, spaces[player.getCurrentSpot()], curPlayers);
 								}
 							}
 						}
 						inGame = getNumPlayers(curPlayers);
-						//redeclare again so if handling the space results in bankruptcy,
-						//the game loop adjusts correctly
 					}
 				}
 			}
 		}
 		return curPlayers[0];
-		//the game exited the big outer loop, which means one person is left
-		//so i return the only element in the vector of players as the winner
 	}
 
 	int Game::calculateAssets(Player & player)
 	{
-		//pretty self-explanatory
-		//total just keeps getting incremented based on what the player has
 		int total{ 0 };
 		total += player.getCash();
 		vector<Space*> properties = Utilities::getProperty(player, spaces);
@@ -1727,7 +1632,6 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 		{
 			total += prop->getCost();
 		}
-		//add everything up then divide by 10, since income tax is 10%
 		return total / 10;
 	}
 
@@ -1738,7 +1642,6 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 
 	void Game::battle(Player & player1, Player & player2)
 	{
-		//set of dialogue battle can use
 		vector<string> battleDialogChoices
 		{
 			" throws their money at the other player! They deal ",
@@ -1753,13 +1656,12 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 			" tells the other player how worthless they are! They deal ",
 			" takes their shoe off and throws it at the other player! They deal "
 		};
-		//HP is reset so if a player wins one fight and gets in another they aren't at a disadvantage HP-wise
 		player1.setHP(100);
 		player2.setHP(100);
-		//give each player a boost to getHP() equal to 10% on assets owned, but ignore cash
+
 		player1.setHP(player1.getHP()+calculateAssets(player1)-(player1.getCash()/10));
 		player2.setHP(player1.getHP()+calculateAssets(player2)-(player2.getCash()/10));
-		//give each player a slight boost to defense based on turrets they have
+
 		vector<Space*> properties = Utilities::getProperty(player1, spaces);
 		for (auto& prop : properties)
 		{
@@ -1782,14 +1684,12 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 		cout << "FIGHT!!!"; Sleep(2000);
 		bool doneBattling{ false };
 		bool player1Turn{ true };
-		while (!doneBattling)//while no one has died
+		while (!doneBattling)
 		{
 			displayBoard();
-			int damage = (rand() % 11) + 30;//random number from 40-50
-			//modify damage based on defense
-			if (player1Turn)//if attacker turn
+			int damage = (rand() % 11) + 30;
+			if (player1Turn)
 			{
-				//some simple math to adjust for defense
 				int toSubtract = player2.getDefense() / 5;
 				damage -= toSubtract;
 				displayBoard();
@@ -1798,7 +1698,6 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 				cout << player2.getName() << "'s HP: " << player2.getHP() << endl << endl;
 				cout << player1.getName() + Utilities::getRandomElement(battleDialogChoices) + to_string(damage) + " damage to " + player2.getName() + "!!!";
 				Sleep(5000);
-				//check if they died
 				if (player2.getHP() <= 0)
 				{
 					doneBattling = true;
@@ -1825,7 +1724,7 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 				cout << player2.getName() << "'s HP: " << player2.getHP() << endl << endl;
 				cout << player2.getName() + Utilities::getRandomElement(battleDialogChoices) + to_string(damage) + " damage to " + player1.getName() + "!!!";
 				Sleep(5000);
-				//check if they died
+				
 				if (player1.getHP() <= 0)
 				{
 					doneBattling = true;
@@ -1876,10 +1775,10 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 		};
 		player.setHP(100);
 		mob.setHP(100);
-		//give each player a boost to getHP() equal to 10% on assets owned(minus cash)
+
 		player.setHP(player.getHP() + calculateAssets(player) - (player.getCash() / 10));
 		mob.setHP(mob.getHP() + calculateAssets(mob) - (mob.getCash() / 10));
-		//give each player a slight boost to defense based on turrets they have
+
 		vector<Space*> properties = Utilities::getProperty(player, spaces);
 		for (auto& prop : properties)
 		{
@@ -1908,7 +1807,7 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 			displayBoard();
 			int damage = (rand() % 20) + 30;
 			int turretDamage = damage;
-			//modify damage based on defense, prevent division by 0 as well
+
 			if (playerTurn)
 			{
 				int toSubtract = mob.getDefense() / 5;
@@ -1919,18 +1818,18 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 				cout << "The mob's HP: " << mob.getHP() << endl << endl;
 				cout << player.getName() + Utilities::getRandomElement(playerChoices) + to_string(damage) + " damage to the mob!!!";
 				Sleep(5000);
-				//check if they died
+
 				if (mob.getHP() <= 0)
 				{
-					doneBattling = true;//battle is over
+					doneBattling = true;
 					displayBoard();
 					cout << "The player successfully attacked the property!" << endl;
 					cout << "Since you were so daring, you must pay twice the cost of the property, or go bankrupt." << endl;
 					Sleep(3000);
-					player.deductCash(prop->getCost()*2);//deduct twice the cost
+					player.deductCash(prop->getCost()*2);
 					setInfo(player);
 					displayBoard();
-					if (player.getCash() <= 0)//check if it bankrupts them
+					if (player.getCash() <= 0)
 					{
 						cout << "You went bankrupt! Maybe you should have left them alone..." << endl;
 						player.setBankruptcy(true);
@@ -1946,10 +1845,10 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 				}
 				else
 				{
-					playerTurn = false;//set turn false so other player can attack
+					playerTurn = false;
 				}
 			}
-			else//not player turn, let other player attack
+			else
 			{
 				int toSubtract = player.getDefense() / 5;
 				damage -= toSubtract;
@@ -1958,13 +1857,13 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 				cout << player.getName() << "'s HP: " << player.getHP() << endl;
 				cout << "The mob's HP: " << mob.getHP() << endl << endl;
 				cout << "The mob" + Utilities::getRandomElement(mobChoices) + to_string(damage) + " damage to " + player.getName() + "!!!";
-				if (prop->getNumTurrets() > 0)//check if there's a turret
+				if (prop->getNumTurrets() > 0)
 				{
-					player.setHP(player.getHP() - turretDamage);//turret attacks
+					player.setHP(player.getHP() - turretDamage);
 					cout << "The turret on the property also fires for " << turretDamage << " damage to the attacker." << endl;
 				}
 				Sleep(5000);
-				//check if they died
+
 				if (player.getHP() <= 0)
 				{
 					doneBattling = true;
