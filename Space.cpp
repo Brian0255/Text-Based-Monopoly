@@ -3,8 +3,6 @@
 
 using namespace std;
 
-//nothing very interesting here
-
 Space::Space(std::string n, std::string t)
 	:name{ n }, type{ t } {}
 
