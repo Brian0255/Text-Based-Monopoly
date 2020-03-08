@@ -9,7 +9,7 @@ Player::Player(std::string n, int c, int spot, bool jail, bool railroad, bool co
 	AI{ computerControlled }, roll{ 0 }, doRoll{ true }, bankrupt{ false }, 
 	jailAttempts{ 0 }, doublesRolled{ 0 }, alwaysDoubles{ false } {}
 
-Player::Player() //default constructor
+Player::Player()
 	: name{ "NONE" }, cash{ 0 }, currentSpot{ 0 }, inJail{ false }, onRailroad{ false }, AI{ false } {}
 
 int Player::getCurrentSpot()
@@ -54,14 +54,10 @@ void Player::addCash(int amt)
 }
 void Player::deductCash(int amt)
 {
-	//a ternary operator:
-	//if the cash deduction will make them negative, set it to 0, otherwise deduct it
 	this->cash = (this->cash-amt < 0) ? 0 : this->cash-amt;
 }
 bool Player::canDeduct(int amt)
 {
-	//a ternary operator:
-	//if their cash after deducting is > 0, return true. otherwise, return false(they don't have enough)
 	return (this->cash - amt > 0) ? true : false;
 }
 void Player::setBankruptcy(bool newBankruptcy)
@@ -71,7 +67,6 @@ void Player::setBankruptcy(bool newBankruptcy)
 	{
 		this->setCurrentSpot(41);
 		//set them out of bounds so they can't end up battling other players even though they're bankrupt
-		//this is kind of a bootleggy thing to do but it works i guess
 	}
 }
 bool Player::isBankrupt()
@@ -128,8 +123,6 @@ int Player::getHP()
 }
 void Player::setHP(int newHP)
 {
-	//a ternary operator:
-	//if the HP deduction will make them negative, set it to 0, otherwise deduct it
 	this->hp = (newHP <= 0) ? 0 : newHP;
 }
 bool Player::isBidding()
