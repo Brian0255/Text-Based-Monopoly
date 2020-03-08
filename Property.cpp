@@ -4,8 +4,6 @@
 
 using namespace std;
 
-//i dont think much explanation is needed for this cpp, but i will explain the various rent member functions
-
 Property::Property(std::string n, std::string t, std::string pT, std::string col, int c, int one, int two, int three, int four, int hot, int houCost, int r, std::string o, bool ow, bool mg)
 	:Space(n, t), propertyType{ pT }, color{ col }, cost{ c }, rent{ r }, houses{ 0 }, defense{ 0 }, hotels{ 0 }, turrets{ 0 }, 
 	oneHouseRent{ one }, twoHouseRent{ two }, threeHouseRent{ three }, fourHouseRent{ four }, 
@@ -50,7 +48,6 @@ void Property::setNumTurrets(int newNumTurrets)
 int Property::getRent()
 {
 
-	//gets the rent based on the number of houses built using a switch case and getters, then returns it. fairly simple
 	int rent{ this->rent };
 	switch (this->getNumHouses())
 	{
@@ -75,26 +72,13 @@ int Property::getRent()
 }
 int Property::getRailroadRent(Player & owner,vector<Space*>& spaces)
 {
-	//gets ALL the railroads owned by the owner of the railroad the player landed on
 	vector<Space*> rails = Utilities::getOwnedRailroads(owner,spaces);
-
-	//the math here is (2 ^ (numRailroads-1) ) * 25
-	//just 1 railroad = 2^0 * 25 = 25
-	//2 railroads = 2^1 * 25 = 50
-	//3 railroads = 2^2 * 25 = 100
-	//it's exponential because the rent doubles for every extra railroads the owner owns besides the one the player landed on
-	//i cast it into an int because pow(double,int) returns double. i could have left that but this just makes more sense
 	return static_cast<int>(pow(2.0, rails.size()-1) * 25);
 }
 int Property::getUtilRent(Player & owner, std::vector<Space*>& spaces, int roll)
 {
 	vector<Space*> utils = Utilities::getOwnedUtilities(owner, spaces);
 	return (utils.size() < 2) ? roll * 4 : roll * 10;
-	//this first gets all the utilities owned by the owner of the space the player landed on.
-	//a ternary operator is then used:
-	//the owner has to own at least 1 utilitiy(this space) for this member function to even get called:
-	//if the player has one utility, the rent is the roll * 4.
-	//otherwise, the player owns both so the rent is roll * 10
 }
 int Property::getCost()
 {
