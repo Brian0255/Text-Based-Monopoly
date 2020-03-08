@@ -39,9 +39,6 @@ public:
 	virtual void setMortgage();
 
 private:
-	//the name of the space
 	std::string name;
-
-	//the type of the space
 	std::string type;
 };
