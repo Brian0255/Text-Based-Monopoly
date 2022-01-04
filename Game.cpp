@@ -1195,7 +1195,7 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 
 		vector<string> possibleNames{ "Carl the Camel","Decius the Dog","Robert the Rabbit","Bob the Bear",
 			"Fred the Fish","Willie the Weasel","Harold the Hamster","David the Dragon",
-			"Pepe the Frog","Steve the Snake" };
+			"Frank the Frog","Steve the Snake" };
 
 		if (numAI > 0)
 		{
