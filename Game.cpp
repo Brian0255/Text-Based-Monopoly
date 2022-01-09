@@ -1295,47 +1295,8 @@ void Game::doStuffBeforeRoll(Player & player, vector<Player>& players)
 		return players;
 	}
 
-	void Game::setCards()
-	{
-		CardHandler::addCard(Card{ "comm","get",10,5,"You win a contest for the world's ugliest person - you get $10" });
-		CardHandler::addCard(Card{ "comm","pay",50,7,"Your toilet breaks. You must pay the plumber $50."});
-		CardHandler::addCard(Card{ "comm","get",100,2,"You get elected as mayor and get $100." });
-		CardHandler::addCard(Card{ "comm","pay",300,2,"Your dog breaks out and gets attacked by a coyote. You must pay the vet $300." });
-		CardHandler::addCard(Card{ "comm","pay",100,3,"Your grandma dies. You must pay $100 for funeral expenses." });
-		CardHandler::addCard(Card{ "comm","pay",30,10,"Your car breaks down. You must pay $30." });
-		CardHandler::addCard(Card{ "comm","advanceGo",0,15,"You advance to go and collect $200." });
-		CardHandler::addCard(Card{ "comm","goJail",0,10,"Oh no! You must go to jail!" });
-		CardHandler::addCard(Card{ "comm","pay",50,10,"Your cat scratches the mayor. You must pay $50." });
-		CardHandler::addCard(Card{ "comm","get",300,1,"Your dog wins a beauty pageant. You get $300." });
-		CardHandler::addCard(Card{ "comm","get",50,10, "The town cuts taxes and you get a break. You get $50." });
-		CardHandler::addCard(Card{ "comm","get",10,15,"You win $10 off of a scratch ticket." });
-		CardHandler::addCard(Card{ "comm","get",30,5,"You win $30 off of a scratch ticket." });
-		CardHandler::addCard(Card{ "comm","pay",50,5,"You lose $50 wasting money on scratch tickets." });
-
-		CardHandler::addCard(Card{ "chance","lose",0,2,"You waste all your money on casino slots! You go bankrupt!" });
-		CardHandler::addCard(Card{ "chance","win",50,1,"You hide in a cave while everyone else gets robbed and goes bankrupt. You win!" });
-		CardHandler::addCard(Card{ "chance","pay",200,5,"You must pay the banker $200." });
-		CardHandler::addCard(Card{ "chance","pay",20,15,"You must pay the banker $20." });
-		CardHandler::addCard(Card{ "chance","pay",50,10,"You must pay the banker $50." });
-		CardHandler::addCard(Card{ "chance","get",1000,1,"You find the Mona Lisa painting in your basement. An art curator gives you $1000 for it.." });
-		CardHandler::addCard(Card{ "chance","get",50,10,"The banker cuts you a deal and gives you $50." });
-		CardHandler::addCard(Card{ "chance","get",50,15,"You play guitar on the street and end up collecting $50."});
-		CardHandler::addCard(Card{ "chance","get",100,5,"You find $100 on the ground and decide to pocket it."});
-		CardHandler::addCard(Card{ "chance","payEach",50,3,"You lose a bet attempting to gamble with the other players. You must pay everyone $50."});
-		CardHandler::addCard(Card{ "chance","advanceGo",0,10, "You advance to go and collect $200." });
-		CardHandler::addCard(Card{ "chance","goJail",0,5,"Oh no! You must go to jail!" });
-		CardHandler::addCard(Card{ "chance","goBack",3,5,"You slip on a banana peel and fall backwards 3 spaces." });
-		CardHandler::addCard(Card{ "chance","goBack",5,3,"You see a dog 5 spaces back and run towards it." });
-		CardHandler::addCard(Card{ "chance","goBack",2,10,"You left your wallet 2 spaces back and have to go back for it." });
-
-		CardHandler::addCard(Card{ "collect","get",25,20,"This card will grant you $25 from the bank." });
-		CardHandler::addCard(Card{ "collect","get",50,10,"This card will grant you $50 from the bank." });
-		CardHandler::addCard(Card{ "collect","get",100,5,"This card will grant you $100 from the bank." });
-		CardHandler::addCard(Card{ "collect","getPlayer",25,20, "This card will give you $25 from a random player." });
-		CardHandler::addCard(Card{ "collect","getPlayer",50,10,"This card will give you $50 from a random player." });
-		CardHandler::addCard(Card{ "collect","getPlayer",100,5,"This card will give you $100 from a random player." });
-		CardHandler::addCard(Card{ "collect","doubleRoll",0,15,"This card will double your next roll." });
-		CardHandler::addCard(Card{ "collect","getOutJail",0,15,"This card will get you out of jail." });
+	void Game::setCards() {
+		CardHandler::setCards();
 	}
 
 	void Game::setGameOutput(std::vector<std::string> newOutput)

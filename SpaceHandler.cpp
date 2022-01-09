@@ -329,7 +329,7 @@ void SpaceHandler::handle(Game& game, Player& player, Space* space, vector<Playe
 											}
 											else if (keepGoing == "N" || keepGoing == "n")
 											{
-												bidder.setBidding(false);/
+												bidder.setBidding(false);
 												cout << "You successfully chickened out on the bid." << endl;
 												Sleep(3000);
 											}

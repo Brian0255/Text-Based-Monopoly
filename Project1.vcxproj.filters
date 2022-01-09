@@ -47,32 +47,32 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Card.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CardHandler.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Game.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Property.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Space.h">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="Utilities.h">
+      <Filter>Resource Files</Filter>
     </ClInclude>
     <ClInclude Include="TaxSpace.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Utilities.h">
-      <Filter>Source Files</Filter>
+      <Filter>Resource Files</Filter>
     </ClInclude>
     <ClInclude Include="SpaceHandler.h">
-      <Filter>Source Files</Filter>
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Space.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Property.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CardHandler.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Card.h">
+      <Filter>Resource Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
