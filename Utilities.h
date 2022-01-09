@@ -39,7 +39,7 @@ public:
 	static T removeRandomElement(std::vector<T>&);
 
 	template<typename T>
-	static T getRandomElement(std::vector<T>&);
+	static T& getRandomElement(std::vector<T>&);
 
 private:
 };
@@ -102,10 +102,10 @@ inline T Utilities::removeRandomElement(std::vector<T>& vec)
 }
 
 template<typename T>
-inline T Utilities::getRandomElement(std::vector<T>& vec)
+inline T& Utilities::getRandomElement(std::vector<T>& vec)
 {
 	int randIndex = (vec.size() <= 1) ? 0 : rand() % (vec.size());
-	T randElement = vec[randIndex];
+	T& randElement = vec[randIndex];
 	return randElement;
 }
 

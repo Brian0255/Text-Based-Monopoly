@@ -14,8 +14,6 @@ vector<Card> CardHandler::commCards;
 vector<Card> CardHandler::chanceCards;
 vector<Card> CardHandler::collectableCards;
 
-void affectActual(vector<Player>& curPlayers, Player& actual);
-
 void CardHandler::handleCard(vector<Player>& curPlayers, Game& game,
 	Player& player, Card card) {
 	string type = card.effect;
@@ -81,7 +79,7 @@ void CardHandler::handleGetPlayerCash(std::vector<Player>& curPlayers, Player& p
 			availPlayers.push_back(other);
 		}
 	}
-	Player randomPlayer = Utilities::getRandomElement(availPlayers);
+	Player& randomPlayer = Utilities::getRandomElement(availPlayers);
 
 	int amt = (randomPlayer.getCash() > card.amount) ? card.amount
 		: randomPlayer.getCash();
@@ -96,7 +94,6 @@ void CardHandler::handleGetPlayerCash(std::vector<Player>& curPlayers, Player& p
 			" went bankrupt! Better luck next time...");
 		randomPlayer.setBankruptcy(true);
 		Utilities::resetOwnership(randomPlayer, game.getSpaces());
-		affectActual(curPlayers, randomPlayer);
 	}
 }
 
@@ -233,14 +230,6 @@ void CardHandler::tryForCollectableCard(Player& player) {
 			<< collect.getDesc() << endl;
 		Sleep(3000);
 		player.setCards(collectables);
-	}
-}
-
-void affectActual(vector<Player>& curPlayers, Player& toCopy) {
-	for (auto& player : curPlayers) {
-		if (player.getName() == toCopy.getName()) {
-			player = toCopy;
-		}
 	}
 }
 
