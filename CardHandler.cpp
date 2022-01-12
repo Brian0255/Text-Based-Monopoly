@@ -10,69 +10,72 @@
 
 using namespace std;
 
-vector<Card> CardHandler::commCards;
-vector<Card> CardHandler::chanceCards;
-vector<Card> CardHandler::collectableCards;
+std::vector<Card> CardHandler::commCards = std::vector<Card>();
+std::vector<Card> CardHandler::chanceCards = std::vector<Card>();
+std::vector<Card> CardHandler::collectableCards = std::vector<Card>();
 
-void CardHandler::handleCard(vector<Player>& curPlayers, Game& game,
-	Player& player, Card card) {
+void CardHandler::handle() {
 	string type = card.effect;
-	vector<string> out;
 	out.push_back(card.desc);
 	game.setGameOutput(out);
 	game.displayBoard();
 	if (type == "get") {
-		handleGetCard(player, card, game, out);
+		handleGetCard();
 	}
 	else if (type == "pay") {
-		handlePayCard(player, card, game, out);
+		handlePayCard();
 	}
 	else if (type == "advanceGo") {
-		handleAdvanceGo(player, game, out);
+		handleAdvanceGo();
 	}
 	else if (type == "goJail") {
-		handleGoToJail(player, game, out);
+		handleGoToJail();
 	}
 	else if (type == "lose") {
-		handleLose(out, game, player);
+		handleLose();
 	}
 	else if (type == "win") {
-		handleWinCard(curPlayers, player, game, out);
+		handleWinCard();
 	}
 	else if (type == "payEach") {
-		handlePayEach(curPlayers, player, out, game, card);
+		handlePayEach();
 	}
 	else if (type == "goBack") {
-		handleGoBack(player, card, game, out);
+		handleGoBack();
 	}
 	else if (type == "doubleRoll") {
 		player.setDoubleRoll(true);
 	}
 	else if (type == "getOutJail") {
-		handleGetOutJail(player, game, out);
+		handleGetOutJail();
 	}
 	else if (type == "getPlayer") {
-		handleGetPlayerCash(curPlayers, player, card, game, out);
+		handleGetPlayerCash();
 	}
 	game.setGameOutput(out);
 	game.displayBoard();
 	Sleep(3000);
 }
 
-void CardHandler::handleGetOutJail(Player& player, Game& game, std::vector<std::string>& out){
+CardHandler::CardHandler(std::vector<Player>& curPlrs, Game& g, Player& plr, Card c)
+	: curPlayers{ curPlrs }, game{ g }, player{ plr }, card{ c } {
+	out = std::vector<string>();
+};
+
+void CardHandler::handleGetOutJail() {
 	player.setCurrentSpot(11);
 	player.setJail(false);
 	game.setInfo(player);
 	out.push_back("You were successfully moved a spot in front of jail. Phew!");
 }
 
-void CardHandler::handleGoBack(Player& player, Card& card, Game& game, std::vector<std::string>& out){
+void CardHandler::handleGoBack() {
 	player.setCurrentSpot(player.getCurrentSpot() - card.amount);
 	game.setInfo(player);
 	out.push_back("You were moved back " + to_string(card.amount) + " spaces.");
 }
 
-void CardHandler::handleGetPlayerCash(std::vector<Player>& curPlayers, Player& player, Card& card, Game& game, std::vector<std::string>& out){
+void CardHandler::handleGetPlayerCash() {
 	vector<Player> availPlayers;
 	for (auto& other : curPlayers) {
 		if (other.getName() != player.getName()) {
@@ -97,7 +100,7 @@ void CardHandler::handleGetPlayerCash(std::vector<Player>& curPlayers, Player& p
 	}
 }
 
-void CardHandler::handlePayEach(std::vector<Player>& curPlayers, Player& player, std::vector<std::string>& out, Game& game, Card& card){
+void CardHandler::handlePayEach() {
 	bool keepPaying{ true };
 	for (auto& otherPlayer : curPlayers) {
 		if (otherPlayer.getName() != player.getName()) {
@@ -127,7 +130,7 @@ void CardHandler::handlePayEach(std::vector<Player>& curPlayers, Player& player,
 	}
 }
 
-void CardHandler::handleWinCard(std::vector<Player>& curPlayers, Player& player, Game& game, std::vector<std::string>& out){
+void CardHandler::handleWinCard() {
 	for (auto& otherPlayer : curPlayers) {
 		if (otherPlayer.getName() != player.getName()) {
 			otherPlayer.setBankruptcy(true);
@@ -138,14 +141,14 @@ void CardHandler::handleWinCard(std::vector<Player>& curPlayers, Player& player,
 	game.setInfo(player);
 }
 
-void CardHandler::handleLose(std::vector<std::string>& out, Game& game, Player& player){
+void CardHandler::handleLose() {
 	out.push_back("Better luck next time...");
 	game.setInfo(player);
 	player.setBankruptcy(true);
 	Utilities::resetOwnership(player, game.getSpaces());
 }
 
-void CardHandler::handleGoToJail(Player& player, Game& game, std::vector<std::string>& out){
+void CardHandler::handleGoToJail() {
 	player.setCurrentSpot(10);
 	game.setInfo(player);
 	player.setJail(true);
@@ -153,7 +156,7 @@ void CardHandler::handleGoToJail(Player& player, Game& game, std::vector<std::st
 	out.push_back("You're in jail now! Good luck getting out of there...");
 }
 
-void CardHandler::handleAdvanceGo(Player& player, Game& game, std::vector<std::string>& out){
+void CardHandler::handleAdvanceGo() {
 	player.setCurrentSpot(0);
 	player.addCash(200);
 	game.setInfo(player);
@@ -161,7 +164,7 @@ void CardHandler::handleAdvanceGo(Player& player, Game& game, std::vector<std::s
 	Sleep(3000);
 }
 
-void CardHandler::handlePayCard(Player& player, Card& card, Game& game, std::vector<std::string>& out){
+void CardHandler::handlePayCard() {
 	player.deductCash(card.amount);
 	game.setInfo(player);
 	if (player.getCash() <= 0) {
@@ -176,7 +179,7 @@ void CardHandler::handlePayCard(Player& player, Card& card, Game& game, std::vec
 	}
 }
 
-void CardHandler::handleGetCard(Player& player, Card& card, Game& game, std::vector<std::string>& out) {
+void CardHandler::handleGetCard() {
 	player.addCash(card.amount);
 	game.setInfo(player);
 	out.push_back("Cash successfully added.");
@@ -200,24 +203,24 @@ void CardHandler::addCard(Card card) {
 	}
 }
 
-Card CardHandler::drawCard(std::string type, Player& player, Game& game) {
+void CardHandler::drawCard(std::string type) {
 	game.displayBoard();
 
 	if (type == "CHANCE") {
 		cout << "You will now draw a chance card..." << endl;
 		Sleep(2000);
-		tryForCollectableCard(player);
-		return Utilities::getRandomElement(CardHandler::chanceCards);
+		tryForCollectableCard();
+		card = Utilities::getRandomElement(CardHandler::chanceCards);
 	}
 	else if (type == "COMM") {
 		cout << "You will now draw a community card..." << endl;
 		Sleep(2000);
-		tryForCollectableCard(player);
-		return Utilities::getRandomElement(CardHandler::commCards);
+		tryForCollectableCard();
+		card = Utilities::getRandomElement(CardHandler::commCards);
 	}
 }
 
-void CardHandler::tryForCollectableCard(Player& player) {
+void CardHandler::tryForCollectableCard() {
 	int getCollect = rand() % 2;
 	vector<Card> collectables = player.getCards();
 
