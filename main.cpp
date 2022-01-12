@@ -4,8 +4,7 @@
 #include<Windows.h>
 using namespace std;
 
-int main()
-{
+int main() {
 	std::srand(static_cast<unsigned int>(time(0)));
 	Game game;
 	game.setCards();

@@ -3,8 +3,7 @@
 #include"Space.h"
 #include<string>
 
-class TaxSpace : public Space
-{
+class TaxSpace : public Space {
 public:
 	TaxSpace(std::string name, std::string type, int cost);
 	~TaxSpace();

@@ -2,8 +2,7 @@
 #include"Player.h"
 #include<string>
 
-class Space
-{
+class Space {
 public:
 	Space(std::string, std::string);
 

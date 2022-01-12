@@ -3,8 +3,7 @@
 #include<string>
 #include"Card.h"
 
-class Player
-{
+class Player {
 public:
 	Player(std::string name, int cash, int currentSpot, bool inJail, bool onRailroad, bool AI);
 	Player();
@@ -12,7 +11,7 @@ public:
 
 	int getCurrentSpot();
 	void setCurrentSpot(int newSpot);
-	
+
 	int getRoll();
 	void setRoll(int newRoll);
 

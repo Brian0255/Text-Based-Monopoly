@@ -4,8 +4,7 @@
 #include"Space.h"
 #include<string>
 
-class Property : public Space
-{
+class Property : public Space {
 public:
 	Property(std::string name, std::string type, std::string propertyType, std::string color, int cost, int oneHouseRent, int twoHouseRent, int threeHouseRent,
 		int fourHouseRent, int hotelRent, int houseCost, int rent, std::string owner, bool owned, bool mortgaged);
