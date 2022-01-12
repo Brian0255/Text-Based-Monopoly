@@ -103,28 +103,27 @@ void CardHandler::handleGetPlayerCash() {
 void CardHandler::handlePayEach() {
 	bool keepPaying{ true };
 	for (auto& otherPlayer : curPlayers) {
-		if (otherPlayer.getName() != player.getName()) {
-			if (keepPaying) {
-				if (player.getCash() <= 0) {
-					out.push_back("Oh no! " + player.getName() +
-						" went bankrupt! Better luck next time...");
-					out.push_back("No one else can get " + player.getName() +
-						"'s cash because " + player.getName() +
-						" went bankrupt.");
-					player.setBankruptcy(true);
-					game.setInfo(player);
-					Utilities::resetOwnership(player, game.getSpaces());
-					keepPaying = false;
-				}
-				else {
-					int amt = (player.getCash() > card.amount) ? card.amount
-						: player.getCash();
-					player.deductCash(amt);
-					otherPlayer.addCash(amt);
-					game.setInfo(player);
-					out.push_back(otherPlayer.getName() + " received " +
-						to_string(amt) + " dollars.");
-				}
+		bool differentPlayer{ otherPlayer.getName() != player.getName() };
+		if (differentPlayer && keepPaying) {
+			if (player.getCash() <= 0) {
+				out.push_back("Oh no! " + player.getName() +
+					" went bankrupt! Better luck next time...");
+				out.push_back("No one else can get " + player.getName() +
+					"'s cash because " + player.getName() +
+					" went bankrupt.");
+				player.setBankruptcy(true);
+				game.setInfo(player);
+				Utilities::resetOwnership(player, game.getSpaces());
+				keepPaying = false;
+			}
+			else {
+				int amt = (player.getCash() > card.amount) ? card.amount
+					: player.getCash();
+				player.deductCash(amt);
+				otherPlayer.addCash(amt);
+				game.setInfo(player);
+				out.push_back(otherPlayer.getName() + " received " +
+					to_string(amt) + " dollars.");
 			}
 		}
 	}
