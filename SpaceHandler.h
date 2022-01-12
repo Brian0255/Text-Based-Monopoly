@@ -18,12 +18,12 @@ public:
 	void handlePropertySpace(int cost);
 	void handleUnownedProperty(int cost);
 	void doBid(int cost);
-	void runBidCycle(std::vector<Player>& bidders, int& currentBid, bool& doneBidding, int cost);
+	void runBidCycle(std::vector<Player*>& bidders, int& currentBid, bool& doneBidding, int cost);
 	void askAIKeepBidding(int cost, int& currentBid, Player& bidder);
 	void askPlayerKeepBidding(int& currentBid, Player& bidder);
 	void setBidWinner(Player& bidder, int& currentBid, bool& doneBidding);
-	void askAIParticipateBid(Player& other, int currentBid, std::vector<Player>& bidders);
-	void askPlayerParticipateBid(Player& other, int currentBid, std::vector<Player>& bidders);
+	void askAIParticipateBid(Player& other, int currentBid, std::vector<Player*>& bidders);
+	void askPlayerParticipateBid(Player& other, int currentBid, std::vector<Player*>& bidders);
 	void askAIToPurchase(int cost, bool& biddable);
 	void askPlayerToPurchase(int cost, bool& biddable);
 	void handleOwnedProperty(int cost);

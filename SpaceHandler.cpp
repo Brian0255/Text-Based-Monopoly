@@ -8,7 +8,7 @@
 
 using namespace std;
 
-int getBidders(vector<Player>& bidders);
+int getBidders(vector<Player*>& bidders);
 
 void SpaceHandler::handle() {
 	game.displayBoard();
@@ -163,7 +163,7 @@ void SpaceHandler::doBid(int cost) {
 	cout << "The property will now be put up for auction, since " << curPlayer.getName() << " did not want it." << endl;
 	Sleep(5000);
 	int currentBid{ cost };
-	vector<Player> bidders;
+	vector<Player*> bidders;
 	int AILimit = cost * 2;
 
 	for (auto& other : curPlayers) {
@@ -190,26 +190,26 @@ void SpaceHandler::doBid(int cost) {
 	}
 }
 
-void SpaceHandler::runBidCycle(std::vector<Player>& bidders, int& currentBid,  bool& doneBidding, int cost) {
+void SpaceHandler::runBidCycle(std::vector<Player*>& bidders, int& currentBid,  bool& doneBidding, int cost) {
 	for (auto& bidder : bidders) {
 		game.displayBoard();
-		if (getBidders(bidders) == 1 && bidder.isBidding()) {
-			setBidWinner(bidder, currentBid, doneBidding);
+		if (getBidders(bidders) == 1 && bidder->isBidding()) {
+			setBidWinner(*bidder, currentBid, doneBidding);
 			break;
 		}
 		else if (getBidders(bidders) > 1) {
-			if (bidder.isBidding()) {
-				if (bidder.getCash() >= currentBid + 1) {
-					if (!bidder.isAI()) {
-						askPlayerKeepBidding(currentBid, bidder);
+			if (bidder->isBidding()) {
+				if (bidder->getCash() >= currentBid + 1) {
+					if (!bidder->isAI()) {
+						askPlayerKeepBidding(currentBid, *bidder);
 					}
 					else {
-						askAIKeepBidding(cost, currentBid, bidder);
+						askAIKeepBidding(cost, currentBid, *bidder);
 					}
 				}
 				else {
-					cout << bidder.getName() << " does not have enough money to stay in the bid." << endl;
-					bidder.setBidding(false);
+					cout << bidder->getName() << " does not have enough money to stay in the bid." << endl;
+					bidder->setBidding(false);
 					Sleep(3000);
 				}
 			}
@@ -266,13 +266,13 @@ void SpaceHandler::setBidWinner(Player& bidder, int& currentBid, bool& doneBiddi
 	doneBidding = true;
 }
 
-void SpaceHandler::askAIParticipateBid(Player& other, int currentBid, std::vector<Player>& bidders) {
+void SpaceHandler::askAIParticipateBid(Player& other, int currentBid, std::vector<Player*>& bidders) {
 	cout << "AI " << other.getName() << " is deciding if they want to bid..." << endl;
 	Sleep(3000);
 	if (other.getCash() >= (currentBid * 2)) {
 		cout << "AI " << other.getName() << " has decided to bid." << endl;
 		Sleep(1500);
-		bidders.push_back(other);
+		bidders.push_back(&other);
 	}
 	else {
 		cout << "AI " << other.getName() << " has decided not to bid." << endl;
@@ -281,7 +281,7 @@ void SpaceHandler::askAIParticipateBid(Player& other, int currentBid, std::vecto
 	}
 }
 
-void SpaceHandler::askPlayerParticipateBid(Player& other, int currentBid, std::vector<Player>& bidders) {
+void SpaceHandler::askPlayerParticipateBid(Player& other, int currentBid, std::vector<Player*>& bidders) {
 	string ans = Utilities::getStringYesNo(other.getName() + ", would you like to participate in the bidding?(y/n): ");
 	if (ans == "Y" || ans == "y") {
 		if (other.getCash() <= currentBid + 1) {
@@ -290,7 +290,7 @@ void SpaceHandler::askPlayerParticipateBid(Player& other, int currentBid, std::v
 			Sleep(3000);
 		}
 		else {
-			bidders.push_back(other);
+			bidders.push_back(&other);
 		}
 	}
 }
@@ -483,10 +483,10 @@ void SpaceHandler::checkForABattle() {
 	}
 }
 
-int getBidders(vector<Player>& bidders) {
+int getBidders(vector<Player*>& bidders) {
 	int tot{ 0 };
 	for (auto& bidder : bidders) {
-		if (bidder.isBidding()) {
+		if (bidder->isBidding()) {
 			++tot;
 		}
 	}
