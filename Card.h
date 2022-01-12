@@ -1,21 +1,21 @@
 #pragma once
 #include<string>
 
-class Card
-{
+class Card {
 public:
 	Card(std::string cardType, std::string effect, int amount, int percentChance, std::string desc);
-	
+	Card();
+
 	std::string toString();
 	std::string getDesc();
 	std::string getEffect();
 
 private:
 	std::string cardType;
-	std::string effect; 
+	std::string effect;
 	int amount;
 	int percentChance;
 	std::string desc;
-	
+
 	friend class CardHandler;
 };
