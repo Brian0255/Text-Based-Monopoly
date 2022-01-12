@@ -5,21 +5,39 @@
 #include <vector>
 #include <string>
 
-class Game
-{
+class Game {
 public:
 	Game();
-	
+
+	void initializeBoard();
+
+	void initializeSpaces();
+
 	void displayBoard();
 	void displayRules();
 	void setInfo(Player player);
-	void doStuffBeforeRoll(Player& player,std::vector<Player>& players);
+	void doStuffBeforeRoll(Player& player);
 	std::vector<Player> setup();
+	int setupAI(int possibleAI);
+	bool setupCheats();
+
+	void enableAlwaysRollDoubles();
+	void enableRollOneTwo();
+	void assignPropRandomly();
+	void assignPropFirstPlayer();
+
+	void generateAI(int numAI);
+	void askForPlayerNames(int numPlayers);
 	void setCards();
 	void setGameOutput(std::vector<std::string> newOutput);
-	int getNumPlayers(std::vector<Player>& players);
+	int getNumPlayers();
 	int rollDie();
-	Player play(std::vector<Player>& curPlayers);
+	Player play();
+	void runPlayerTurn(Player& player);
+	void letPlayerRoll(Player& player);
+	void movePlayer(Player& player);
+	bool runDoublesCase(Player& player, int jail);
+	void runPlayerTurnJail(Player& player);
 	int calculateAssets(Player& player);
 	std::vector<Space*> getSpaces();
 	void battle(Player& player1, Player& player2);
@@ -33,4 +51,6 @@ private:
 	std::string rules;
 	std::vector<Space*> spaces;
 	std::vector<std::string> colorSets;
+	int inGame;
+	std::vector<Player> curPlayers;
 };

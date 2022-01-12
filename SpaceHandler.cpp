@@ -389,17 +389,17 @@ void SpaceHandler::ownedByAnotherAIChoice(int rent) {
 			bool cantPayRent{ rent > curPlayer.getCash() };
 
 			attack = (cantPayRent || (higherDefense && !hasTurrets));
-				if (attack) {
-					game.attackProp(curPlayer, owner);
-				}
-				else {
-					curPlayer.deductCash(rent);
-					owner.addCash(rent);
-					game.setInfo(curPlayer);
-					game.displayBoard();
-					cout << curPlayer.getName() << " has decided to just pay the rent." << endl;
-					Sleep(2000);
-				}
+			if (attack) {
+				game.attackProp(curPlayer, owner);
+			}
+			else {
+				curPlayer.deductCash(rent);
+				owner.addCash(rent);
+				game.setInfo(curPlayer);
+				game.displayBoard();
+				cout << curPlayer.getName() << " has decided to just pay the rent." << endl;
+				Sleep(2000);
+			}
 		}
 	}
 }
