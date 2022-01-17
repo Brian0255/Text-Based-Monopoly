@@ -42,6 +42,12 @@ public:
 	void movePlayer(Player& player);
 	bool runDoublesCase(Player& player, int jail);
 	void runPlayerTurnJail(Player& player);
+	void runPlayerJailDecision(Player& player, std::vector<std::string>& jailChoices);
+	void pay50InJail(Player& player);
+	void attemptToRollDoublesPlayer(Player& player);
+	void runAIJailDecision(Player& player);
+	void attemptToRollDoublesAI(Player& player);
+	void punishPlayerForFailingJail(Player& player);
 	int calculateAssets(Player& player);
 	std::vector<Space*> getSpaces();
 	void battle(Player& player1, Player& player2);

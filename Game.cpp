@@ -13,7 +13,7 @@
 
 using namespace std;
 
-vector<string> Game::battleDialogChoices = 
+vector<string> Game::battleDialogChoices =
 {
 	" throws their money at the other player! They deal ",
 	" throws the board at the other player! They deal ",
@@ -28,7 +28,7 @@ vector<string> Game::battleDialogChoices =
 	" takes their shoe off and throws it at the other player! They deal "
 };
 
-vector<string> Game::playerMobChoices = 
+vector<string> Game::playerMobChoices =
 {
 	" throws their money at the mob of people! They deal ",
 	" throws the board at the mob of people! They deal ",
@@ -42,7 +42,7 @@ vector<string> Game::playerMobChoices =
 	" tells the mob of people how worthless they are! They deal ",
 	" takes their shoe off and throws it at the mob of people! They deal "
 };
-vector<string> Game::mobChoices = 
+vector<string> Game::mobChoices =
 {
 	" damages the attacker with pitch forks! They deal ",
 	" drops a bucket of water on the attacker! They deal ",
@@ -64,11 +64,11 @@ Game::Game() {
 
 	colorSets = { "MAGENTA","BLUE","PINK","ORANGE","RED","YELLOW","GREEN","DARK_BLUE" };
 
-	playerInfo ={
+	playerInfo = {
 		"Player Information",
 	};
 
-	gameOutput ={
+	gameOutput = {
 		"Nothing is currently happening."
 	};
 }
@@ -1103,7 +1103,7 @@ bool Game::setupCheats() {
 		case 4:
 			assignPropRandomly();
 			break;
-		case 5: 
+		case 5:
 			assignPropFirstPlayer();
 			break;
 		}
@@ -1313,116 +1313,136 @@ void Game::runPlayerTurnJail(Player& player) {
 	Sleep(4000);
 	if (player.getJailAttempts() < 2) {
 		if (!player.isAI()) {
-			cout << "You have not yet failed 2 attempts, and are at " << to_string(player.getJailAttempts()) << " attempts." << endl;
-			cout << "Here are your choices: " << endl;
-			for (size_t i{ 0 }; i < jailChoices.size(); ++i) {
-				cout << jailChoices[i] << endl;
-			}
-			cout << endl;
-			int choice = Utilities::getIntInRange("What would you like to do?: ", 1, jailChoices.size());
-			switch (choice) {
-			case 1://attempt to roll doubles
-			{
-				displayBoard();
-				cout << "You roll the dice..." << endl;
-				Sleep(3000);
-				int roll1 = rollDie();
-				int roll2 = rollDie();
-				player.setRoll(roll1 + roll2);
-				cout << "You roll a " << to_string(roll1) << " and a " << to_string(roll2) << ".\n";
-				Sleep(2000);
-				if (roll1 == roll2) {
-					cout << "You rolled doubles! Congratulations!" << endl;
-					Sleep(3000);
-					player.setJail(false);
-					player.setRolling(true);
-				}
-				else {
-					cout << "You didn't roll doubles..." << endl;
-					Sleep(1500);
-					cout << "Don't do the crime if you can't do the time..." << endl;
-					player.addJailAttempt();
-					Sleep(3000);
-					player.setRolling(false);
-				}
-			}
-			break;
-			case 2://just pay 50 case
-			{
-				displayBoard();
-				player.deductCash(50);
-				if (player.getCash() <= 0) {
-					player.setBankruptcy(true);
-					Utilities::resetOwnership(player, spaces);
-					cout << "You went bankrupt. Better luck next time..." << endl;
-					Sleep(3000);
-					player.setRolling(false);
-				}
-				else {
-					cout << "$50 dollars was subtracted, and you are now out of jail." << endl;
-					Sleep(3000);
-					player.setJail(false);
-					player.setRolling(true);
-				}
-			}
-			break;
-			}
+			runPlayerJailDecision(player, jailChoices);
 		}
-		else//AI makes decision
-		{
-			cout << player.getName() << " is making a decision..." << endl;
-			Sleep(3000);
-			//the AI will always just pay the fine, unless they actually cant
-			if (player.getCash() > 50) {
-				player.deductCash(50);
-				setInfo(player);
-				displayBoard();
-				cout << player.getName() << " decided to just pay the 50 dollars." << endl;
-				player.setJail(false);
-				player.setRolling(true);
-				Sleep(3000);
-			}
-			else {
-				displayBoard();
-				cout << player.getName() << " is going to attempt to roll doubles." << endl;
-				Sleep(3000);
-				int roll1 = rollDie();
-				int roll2 = rollDie();
-				player.setRoll(roll1 + roll2);
-				cout << player.getName() << " rolled a " << to_string(roll1) << " and a " << to_string(roll2) << ".\n";
-				Sleep(2000);
-				if (roll1 == roll2) {
-					cout << player.getName() << " rolled doubles! Wowee!" << endl;
-					Sleep(3000);
-					player.setJail(false);
-					player.setRolling(true);
-				}
-				else {
-					cout << player.getName() << " didn't roll doubles. Nothing happens for the rest of their turn..." << endl;
-					player.addJailAttempt();
-					Sleep(3000);
-					player.setRolling(false);
-				}
-			}
+		else {
+			runAIJailDecision(player);
 		}
 	}
 	else {
-		displayBoard();
-		cout << "Since you have 2 failed attempts to rolled doubles, you will now be charged $50. Bankruptcy is possible." << endl;
-		Sleep(4000);
-		player.deductCash(50);
-		if (player.getCash() <= 0) {
-			player.setBankruptcy(true);
-			Utilities::resetOwnership(player, spaces);
-			cout << "You went bankrupt. Better luck next time..." << endl;
-			Sleep(3000);
-			player.setRolling(false);
-		}
-		else {
-			cout << "$50 dollars was subtracted, and you are now out of jail." << endl;
-			Sleep(3000);
-			player.setRolling(false);
-		}
+		punishPlayerForFailingJail(player);
+	}
+}
+
+void Game::runPlayerJailDecision(Player& player, std::vector<std::string>& jailChoices) {
+	cout << "You have not yet failed 2 attempts, and are at " << to_string(player.getJailAttempts()) << " attempts." << endl;
+	cout << "Here are your choices: " << endl;
+	for (size_t i{ 0 }; i < jailChoices.size(); ++i) {
+		cout << jailChoices[i] << endl;
+	}
+	cout << endl;
+	int choice = Utilities::getIntInRange("What would you like to do?: ", 1, jailChoices.size());
+	switch (choice) {
+	case 1: {
+		attemptToRollDoublesPlayer(player);
+	}
+	break;
+	case 2:{
+		pay50InJail(player);
+	}
+	break;
+	}
+}
+
+void Game::pay50InJail(Player& player) {
+	player.deductCash(50);
+	setInfo(player);
+	displayBoard();
+
+	player.deductCash(50);
+	if (player.getCash() <= 0) {
+		player.setBankruptcy(true);
+		Utilities::resetOwnership(player, spaces);
+		cout << "You went bankrupt. Better luck next time..." << endl;
+		Sleep(3000);
+		player.setRolling(false);
+	}
+	else {
+		string message = (player.isAI()) ? (player.getName() + " decided to just pay the 50 dollars.")
+			: "$50 dollars was subtracted, and you are now out of jail.";
+		cout << message << endl;
+		Sleep(3000);
+		player.setJail(false);
+		player.setRolling(true);
+	}
+}
+
+void Game::attemptToRollDoublesPlayer(Player& player) {
+	displayBoard();
+	cout << "You roll the dice..." << endl;
+	Sleep(3000);
+	int roll1 = rollDie();
+	int roll2 = rollDie();
+	player.setRoll(roll1 + roll2);
+	cout << "You roll a " << to_string(roll1) << " and a " << to_string(roll2) << ".\n";
+	Sleep(2000);
+	if (roll1 == roll2) {
+		cout << "You rolled doubles! Congratulations!" << endl;
+		Sleep(3000);
+		player.setJail(false);
+		player.setRolling(true);
+	}
+	else {
+		cout << "You didn't roll doubles..." << endl;
+		Sleep(1500);
+		cout << "Don't do the crime if you can't do the time..." << endl;
+		player.addJailAttempt();
+		Sleep(3000);
+		player.setRolling(false);
+	}
+}
+
+void Game::runAIJailDecision(Player& player) {
+	cout << player.getName() << " is making a decision..." << endl;
+	Sleep(3000);
+	//the AI will always just pay the fine, unless they actually cant
+	if (player.getCash() > 50) {
+		pay50InJail(player);
+	}
+	else {
+		attemptToRollDoublesAI(player);
+	}
+}
+
+void Game::attemptToRollDoublesAI(Player& player) {
+	displayBoard();
+	cout << player.getName() << " is going to attempt to roll doubles." << endl;
+	Sleep(3000);
+	int roll1 = rollDie();
+	int roll2 = rollDie();
+	player.setRoll(roll1 + roll2);
+	cout << player.getName() << " rolled a " << to_string(roll1) << " and a " << to_string(roll2) << ".\n";
+	Sleep(2000);
+	if (roll1 == roll2) {
+		cout << player.getName() << " rolled doubles! Wowee!" << endl;
+		Sleep(3000);
+		player.setJail(false);
+		player.setRolling(true);
+	}
+	else {
+		cout << player.getName() << " didn't roll doubles. Nothing happens for the rest of their turn..." << endl;
+		player.addJailAttempt();
+		Sleep(3000);
+		player.setRolling(false);
+	}
+}
+
+void Game::punishPlayerForFailingJail(Player& player) {
+	displayBoard();
+	cout << "Since you have 2 failed attempts to rolled doubles, you will now be charged $50. Bankruptcy is possible." << endl;
+	Sleep(4000);
+	player.deductCash(50);
+	if (player.getCash() <= 0) {
+		player.setBankruptcy(true);
+		Utilities::resetOwnership(player, spaces);
+		cout << "You went bankrupt. Better luck next time..." << endl;
+		Sleep(3000);
+		player.setRolling(false);
+	}
+	else {
+		cout << "$50 dollars was subtracted, and you are now out of jail." << endl;
+		Sleep(3000);
+		player.setRolling(false);
 	}
 }
 
