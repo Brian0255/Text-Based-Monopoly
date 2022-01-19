@@ -45,34 +45,58 @@
     <ClCompile Include="SpaceHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TurnHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TurnBuildingHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TurnTradingHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TurnAIHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Utilities.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TaxSpace.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SpaceHandler.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Space.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Property.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Game.h">
-      <Filter>Resource Files</Filter>
+    <ClInclude Include="Card.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CardHandler.h">
-      <Filter>Resource Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Card.h">
-      <Filter>Resource Files</Filter>
+    <ClInclude Include="Player.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Space.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Property.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SpaceHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TaxSpace.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Utilities.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TurnHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TurnBuildingHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TurnTradingHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TurnAIHandler.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

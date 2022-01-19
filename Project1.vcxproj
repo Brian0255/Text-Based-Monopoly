@@ -28,6 +28,10 @@
     <ClCompile Include="Property.cpp" />
     <ClCompile Include="Space.cpp" />
     <ClCompile Include="TaxSpace.cpp" />
+    <ClCompile Include="TurnAIHandler.cpp" />
+    <ClCompile Include="TurnBuildingHandler.cpp" />
+    <ClCompile Include="TurnHandler.cpp" />
+    <ClCompile Include="TurnTradingHandler.cpp" />
     <ClCompile Include="Utilities.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -39,6 +43,10 @@
     <ClInclude Include="Property.h" />
     <ClInclude Include="Space.h" />
     <ClInclude Include="TaxSpace.h" />
+    <ClInclude Include="TurnAIHandler.h" />
+    <ClInclude Include="TurnBuildingHandler.h" />
+    <ClInclude Include="TurnHandler.h" />
+    <ClInclude Include="TurnTradingHandler.h" />
     <ClInclude Include="Utilities.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

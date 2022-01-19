@@ -117,8 +117,7 @@ void CardHandler::handlePayEach() {
 				keepPaying = false;
 			}
 			else {
-				int amt = (player.getCash() > card.amount) ? card.amount
-					: player.getCash();
+				int amt = (player.getCash() > card.amount) ? card.amount : player.getCash();
 				player.deductCash(amt);
 				otherPlayer.addCash(amt);
 				game.setInfo(player);
