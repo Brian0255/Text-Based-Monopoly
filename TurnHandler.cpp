@@ -64,7 +64,6 @@ bool TurnHandler::handleTurnPlayer() {
 		turnTradingHandler.handle();
 		break;
 	case 4:
-
 		turnBuildingHandler.handle();
 		break;
 	case 5:

@@ -28,6 +28,7 @@
     <ClCompile Include="Property.cpp" />
     <ClCompile Include="Space.cpp" />
     <ClCompile Include="TaxSpace.cpp" />
+    <ClCompile Include="Trade.cpp" />
     <ClCompile Include="TurnAIHandler.cpp" />
     <ClCompile Include="TurnBuildingHandler.cpp" />
     <ClCompile Include="TurnHandler.cpp" />
@@ -43,6 +44,7 @@
     <ClInclude Include="Property.h" />
     <ClInclude Include="Space.h" />
     <ClInclude Include="TaxSpace.h" />
+    <ClInclude Include="Trade.h" />
     <ClInclude Include="TurnAIHandler.h" />
     <ClInclude Include="TurnBuildingHandler.h" />
     <ClInclude Include="TurnHandler.h" />

@@ -40,21 +40,22 @@ bool TurnBuildingHandler::handleTurretBuildingPlayer() {
 			displayTurretBuildingChoices(prop);
 			int ans = Utilities::getIntInRange("Please select which property you want to build a turret on.\nIf you wish to exit, type 0: ", 0, prop.size());
 			doneTurreting = (ans == 0);
-			if(!doneTurreting){
-			Space* toBuild = prop[ans - 1];
-			if (toBuild->getNumTurrets() == 0) {
-				int costToBuild = toBuild->getHouseCost() * 2;
-				if (player.canDeduct(costToBuild)) {
-					buildTurretPlayer(costToBuild, toBuild);
+			if (!doneTurreting) {
+				Space* toBuild = prop[ans - 1];
+				if (toBuild->getNumTurrets() == 0) {
+					int costToBuild = toBuild->getHouseCost() * 2;
+					if (player.canDeduct(costToBuild)) {
+						buildTurretPlayer(costToBuild, toBuild);
+					}
+					else {
+						std::cout << "\nYou lack sufficient funds to build a turret. Please select another property." << endl;
+						Sleep(3000);
+					}
 				}
 				else {
-					std::cout << "\nYou lack sufficient funds to build a turret. Please select another property." << endl;
+					std::cout << "\nTurret already built on that property.\nPlease select another." << endl;
 					Sleep(3000);
 				}
-			}
-			else {
-				std::cout << "\nTurret already built on that property.\nPlease select another." << endl;
-				Sleep(3000);
 			}
 		}
 	}

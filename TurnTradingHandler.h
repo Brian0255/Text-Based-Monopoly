@@ -1,6 +1,6 @@
 #pragma once
-#include "TurnHandler.h"
 #include"Trade.h"
+#include"Game.h"
 #include<vector>
 class TurnTradingHandler {
 public:
