@@ -147,7 +147,7 @@ void Game::initializeSpaces() {
 	spaces.push_back(new Property{ "Illinois Avenue","PROPERTY","STANDARD","RED",240,100,300,750,925,1100,150,20,"None",false,false });
 	spaces.push_back(new Property{ "B&O Railroad","PROPERTY","RAILROAD","WHITE",200,0,0,0,0,0,50,25,"None",false,false });
 	spaces.push_back(new Property{ "Atlantic Avenue","PROPERTY","STANDARD","YELLOW",260,110,330,800,975,1150,150,22,"None",false,false });
-	spaces.push_back(new Property{ "Ventnor Avenuie","PROPERTY","STANDARD","YELLOW",260,110,330,800,975,1150,150,22,"None",false,false });
+	spaces.push_back(new Property{ "Ventnor Avenue","PROPERTY","STANDARD","YELLOW",260,110,330,800,975,1150,150,22,"None",false,false });
 	spaces.push_back(new Property{ "Water Works","PROPERTY","UTILITY","NEUTRAL",150,0,0,0,0,0,50,0,"None",false,false });
 	spaces.push_back(new Property{ "Marvin Gardens","PROPERTY","STANDARD","YELLOW",280,120,360,850,1025,1200,150,24,"None",false,false });
 	spaces.push_back(new Space{ "Go to Jail","GOTO_JAIL" });

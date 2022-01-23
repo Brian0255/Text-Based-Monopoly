@@ -106,7 +106,7 @@ void TurnTradingHandler::askPlayerAcceptTrade(Trade& trade) {
 		std::cout << "Trade was rejected! Nothing will happen between both players." << endl;
 		Sleep(1000);
 		std::cout << "Returning to main menu..." << endl;
-		Sleep(3000); \
+		Sleep(3000); 
 	}
 }
 
