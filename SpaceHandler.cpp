@@ -480,6 +480,8 @@ void SpaceHandler::checkForABattle() {
 		Sleep(6000);
 		int randInt = (toBattle.size() <= 1) ? 0 : rand() % toBattle.size();
 		game.battle(curPlayer, *(toBattle[randInt]));
+		game.setInfo(curPlayer);
+		game.displayBoard();
 	}
 }
 
