@@ -176,11 +176,6 @@ void Game::displayBoard() {
 	}
 }
 
-void Game::displayRules() {
-	system("CLS");
-	cout << "Please refer to the text file located within the game folder \"RULES.TXT\" to see how to play." << endl;
-}
-
 void Game::setInfo(Player plr) {
 	boardInfo.clear();
 	playerInfo.clear();
