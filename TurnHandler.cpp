@@ -40,7 +40,6 @@ bool TurnHandler::handleTurnPlayer() {
 	bool done{ false };
 	displayChoices();
 	int ans = Utilities::getIntInRange("Please enter an option. If you wish to roll, type 0: ", 0, 6);
-	Utilities::removeObjectByValue(tradeable, player); //avoid player trading with themselves
 	TurnBuildingHandler turnBuildingHandler = TurnBuildingHandler(game, player, curPlayers, spaces, gameOutput, colorSets);
 	TurnTradingHandler turnTradingHandler = TurnTradingHandler(game, player, curPlayers, spaces, gameOutput, colorSets);
 	switch (ans) {
