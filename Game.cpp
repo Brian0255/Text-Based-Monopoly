@@ -672,6 +672,7 @@ bool Game::runPlayerBattleTurn(Player& player2, Player& player1, bool player1Tur
 	//this is done to make sure the order of HP displayed is always the same despite whose turn it is(easier to keep track of)
 	Player first = (player1Turn) ? player1 : player2;
 	Player second = (player1Turn) ? player2 : player1;
+	displayBoard();
 	cout << first.getName() << "'s HP: " << first.getHP() << endl;
 	cout << second.getName() << "'s HP: " << second.getHP() << endl << endl;
 	cout << player1.getName() + Utilities::getRandomElement(battleDialogChoices) + to_string(damage) + " damage to " + player2.getName() + "!!!";
