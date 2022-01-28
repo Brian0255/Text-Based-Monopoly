@@ -16,10 +16,13 @@ public:
 
 	static std::vector<Space*> getProperty(Player& player, std::vector<Space*> spaces);
 	static std::vector<Space*> getMortgagedProperty(Player& player, std::vector<Space*> spaces);
+
 	static std::vector<Space*> getOwnedRailroads(Player& player, std::vector<Space*> spaces);
 	static std::vector<Space*> getOwnedUtilities(Player& player, std::vector<Space*> spaces);
+
 	static std::vector<std::vector<Space*>> getOwnedSets(Player& player, std::vector<Space*> spaces, std::vector<std::string> colors);
 	static std::vector<std::vector<Space*>> getHotellableSets(Player& player, std::vector<Space*> spaces, std::vector<std::string> colors);
+
 	static void resetOwnership(Player& player, std::vector<Space*> spaces);
 
 	template<typename T>

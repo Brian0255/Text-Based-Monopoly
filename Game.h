@@ -14,11 +14,9 @@ public:
 	static std::vector<std::string> battleDialogChoices;
 
 	void initializeBoard();
-
 	void initializeSpaces();
-
 	void displayBoard();
-	void displayRules();
+
 	void setInfo(Player player);
 	void doStuffBeforeRoll(Player& player);
 	std::vector<Player> setup();

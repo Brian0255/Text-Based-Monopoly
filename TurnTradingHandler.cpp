@@ -84,7 +84,7 @@ void TurnTradingHandler::askAIAcceptTrade(Trade& trade) {
 	}
 	else {
 		std::cout << "The AI " << trade.player2.getName() << " has rejected your offer." << endl;
-		Sleep(1000);
+		Sleep(3000);
 		std::cout << "Now returning to main menu..." << endl;
 		Sleep(3000);
 	}
@@ -104,7 +104,7 @@ void TurnTradingHandler::askPlayerAcceptTrade(Trade& trade) {
 	}
 	else if (doTheTrade == "n" || doTheTrade == "N") {
 		std::cout << "Trade was rejected! Nothing will happen between both players." << endl;
-		Sleep(1000);
+		Sleep(3000);
 		std::cout << "Returning to main menu..." << endl;
 		Sleep(3000); 
 	}

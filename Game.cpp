@@ -196,7 +196,7 @@ void Game::doStuffBeforeRoll(Player& player) {
 
 vector<Player> Game::setup() {
 	system("CLS");
-	int numPlayers = Utilities::getIntInRange("How many players will be playing?(0-6):", 0, 6);
+	int numPlayers = Utilities::getIntInRange("How many players will be playing? (0-6):", 0, 6);
 	int possibleAI = 6 - numPlayers;
 	int numAI = 0;
 	if (possibleAI > 0) {
@@ -222,7 +222,7 @@ vector<Player> Game::setup() {
 
 int Game::setupAI(int possibleAI) {
 	int numAI{ 0 };
-	string choice = Utilities::getStringYesNo("Would you like to play against AI?(y/n): ");
+	string choice = Utilities::getStringYesNo("Would you like to play against AI? (y/n): ");
 	if (choice == "y") {
 		if (possibleAI > 1) {
 			string prompt = "How many AI would you like to play against?(1-" + to_string(possibleAI) + "):";
@@ -240,9 +240,9 @@ bool Game::setupCheats() {
 	bool doneCheating{ false };
 	bool infCash{ false };
 	vector<string> cheats{
-		"1 - Everyone gets 1 million(for house/hotel/turret purchase testing)",
-		"2 - Every roll is doubles(for three doubles testing) - rolling to get out of jail is ignored",
-		"3 - Everybody rolls a 1 and a 2(for battle testing) - this overrides option 2, and rolling to get out of jail is ignored",
+		"1 - Everyone gets 1 million (for house/hotel/turret purchase testing)",
+		"2 - Every roll is doubles (for three doubles testing) - rolling to get out of jail is ignored",
+		"3 - Everybody rolls a 1 and a 2 (for battle testing) - this overrides option 2, and rolling to get out of jail is ignored",
 		"4 - All property is randomly assigned ownership throughout players(for trade testing)",
 		"5 - All property is assigned ownership to player 1",
 	};
@@ -336,7 +336,7 @@ void Game::generateAI(int numAI) {
 void Game::askForPlayerNames(int numPlayers) {
 	for (int i{ 1 }; i <= numPlayers; ++i) {
 		cout << "Player " << to_string(i) << ", it's time to enter your name." << endl;
-		string name = Utilities::getStringLimit("Please enter a name(1-10 characters): ", 10);
+		string name = Utilities::getStringLimit("Please enter a name (1-10 characters): ", 10);
 		cout << "Name fits limit." << endl;
 		Player p{ name,0,0,false,false,false };
 		curPlayers.push_back(p);
@@ -474,7 +474,7 @@ bool Game::runDoublesCase(Player& player, int jail) {
 
 void Game::runPlayerTurnJail(Player& player) {
 	vector<string> jailChoices{ "1 - Attempt to roll a double",
-						"2 - Pay the $50(this will bankrupt you if you cannot pay it)" };
+						"2 - Pay the $50 (this will bankrupt you if you cannot pay it)" };
 
 	player.setRolling(false);
 	cout << "Since you are in jail, you must pay a $50 fine or attempt to roll doubles.\nAfter 2 failed attempts to roll doubles, you must pay up." << endl;

@@ -11,19 +11,25 @@ public:
 
 	std::string toString();
 	std::string getPropertyType();
+
 	std::string getOwner();
 	void setOwner(std::string newOwner);
+
 	int getNumHouses();
 	void setNumHouses(int newNumHouses);
 	void addHouse();
+
 	int getNumHotels();
 	void setNumHotels(int newNumHotels);
 	void addHotel();
+
 	int getNumTurrets();
 	void setNumTurrets(int newNumTurrets);
+
 	int getRent();
 	int getRailroadRent(Player& player, std::vector<Space*>& spaces);
 	int getUtilRent(Player& player, std::vector<Space*>& spaces, int roll);
+
 	int getCost();
 	int getOneHouseRent();
 	int getTwoHouseRent();
@@ -31,6 +37,7 @@ public:
 	int getFourHouseRent();
 	int getHotelRent();
 	int getHouseCost();
+
 	bool isMortgaged();
 	void setMortgage();
 	std::string getColor();
